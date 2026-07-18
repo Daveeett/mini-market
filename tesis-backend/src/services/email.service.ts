@@ -84,8 +84,8 @@ export class EmailService {
       });
       console.log(`Email enviado a ${data.to}`);
       console.warn("\n============================================================");
-      console.warn("🔗 ENLACE DEL ESTADO DE CUENTA GENERADO PARA PRUEBAS:");
-      console.warn("👉 HAZ CLIC AQUI: " + data.statementUrl);
+      console.warn(" ENLACE DEL ESTADO DE CUENTA GENERADO PARA PRUEBAS:");
+      console.warn(" HAZ CLIC AQUI: " + data.statementUrl);
       console.warn("============================================================\n");
     } catch (error) {
       console.error("Error al enviar el email normal, intentando Ethereal...");
@@ -109,8 +109,8 @@ export class EmailService {
           });
           const etherealUrl = nodemailer.getTestMessageUrl(info);
           console.warn("\n============================================================");
-          console.warn("📧 CORREO ETHEREAL ENVIADO!");
-          console.warn("👉 HAZ CLIC AQUI: " + etherealUrl);
+          console.warn(" CORREO ETHEREAL ENVIADO!");
+          console.warn(" HAZ CLIC AQUI: " + etherealUrl);
           console.warn("============================================================\n");
           return;
         } catch (testError) {
