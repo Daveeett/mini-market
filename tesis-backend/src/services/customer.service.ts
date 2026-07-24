@@ -13,7 +13,7 @@ export class CustomerService {
     fullName: string;
     phone: string;
     email?: string;
-    address?: string;
+    description?: string;
   }) {
     const exists = await this.customerRepo.findByDoc(input.docType, input.docNumber);
     if (exists) {

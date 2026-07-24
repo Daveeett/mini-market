@@ -11,5 +11,5 @@ export const createSchema = z.object({
   fullName: z.string().min(2).max(100).regex(regexText, "Solo se permiten letras y espacios"),
   phone: z.string().regex(regexPhone, "Debe contener exactamente 10 números"),
   email: z.union([z.string().regex(regexEmail), z.literal("")]),
-  address: z.string().min(1).max(255),
+  description: z.string().min(1).max(255).optional(),
 });

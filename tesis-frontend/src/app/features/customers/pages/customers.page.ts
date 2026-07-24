@@ -22,6 +22,7 @@ export class CustomersPage {
     docNumber: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
     phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
     email: ['', [Validators.email]],
+    description: [''],
   });
 
   private readonly destroyRef = inject(DestroyRef);
@@ -45,6 +46,7 @@ export class CustomersPage {
       docNumber: raw.docNumber ?? '',
       phone: raw.phone ?? '',
       email: raw.email ?? '',
+      description: raw.description ?? '',
     };
 
      this.customerService.createCustomer(payload)
@@ -57,6 +59,7 @@ export class CustomersPage {
              docNumber: '',
              phone: '',
              email: '',
+             description: '',
            });
            this.loadCustomers();
          },

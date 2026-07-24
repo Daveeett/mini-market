@@ -1,30 +1,30 @@
 @if (isAdmin) {
-  <section class="mb-6">
-    <h1 class="text-2xl font-bold">Dashboard Administrativo</h1>
-    <p class="text-sm text-base-content/70">Analitica en tiempo real, alertas de mora y salud del negocio.</p>
+  <section class="mb-4 sm:mb-6">
+    <h1 class="text-xl sm:text-2xl font-bold">Dashboard Administrativo</h1>
+    <p class="text-xs sm:text-sm text-base-content/70">Analitica en tiempo real, alertas de mora y salud del negocio.</p>
   </section>
 
-  <div class="stats stats-vertical lg:stats-horizontal w-full bg-base-100 border border-base-300 shadow-sm mb-6">
-    <div class="stat">
+  <div class="stats stats-vertical lg:stats-horizontal w-full bg-base-100 border border-base-300  shadow-sm mb-4">
+    <div class="stat p-4 sm:p-6">
       <div class="stat-figure text-error">
         <ng-icon name="heroBellAlert" class="text-2xl"></ng-icon>
       </div>
       <div class="stat-title text-xs uppercase tracking-widest">Alertas de Mora</div>
-      <div class="stat-value text-error">{{ alerts().length }}</div>
+      <div class="stat-value text-error text-2xl sm:text-3xl lg:text-4xl">{{ alerts().length }}</div>
     </div>
-    <div class="stat">
+    <div class="stat p-4 sm:p-6">
       <div class="stat-figure text-warning">
         <ng-icon name="heroBanknotes" class="text-2xl"></ng-icon>
       </div>
       <div class="stat-title text-xs uppercase tracking-widest">Cartera Vencida</div>
-      <div class="stat-value">{{ overdueTotal }}</div>
+      <div class="stat-value text-2xl sm:text-3xl lg:text-4xl">{{ overdueTotal }}</div>
     </div>
-    <div class="stat">
+    <div class="stat p-4 sm:p-6">
       <div class="stat-figure text-success">
         <ng-icon name="heroChartBar" class="text-2xl"></ng-icon>
       </div>
       <div class="stat-title text-xs uppercase tracking-widest">Creditos Activos</div>
-      <div class="stat-value">
+      <div class="stat-value text-2xl sm:text-3xl lg:text-4xl">
         @if (statsData()?.semaphore) {
           {{ statsData()!.semaphore.green + statsData()!.semaphore.yellow + statsData()!.semaphore.red }}
         } @else {
@@ -37,7 +37,7 @@
   <div class="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-6 mb-8 items-start">
     <div class="flex flex-col gap-6">
       <div class="card bg-base-100 border border-base-300 shadow-sm">
-        <div class="card-body">
+        <div class="card-body p-4 sm:p-6">
           <div class="flex items-center gap-2 mb-4">
             <ng-icon name="heroBanknotes" class="text-lg"></ng-icon>
             <h3 class="text-sm font-bold uppercase tracking-widest">Movimientos de Caja (Ultimos 7 dias)</h3>
@@ -55,7 +55,7 @@
       </div>
 
       <div class="card bg-base-100 border border-base-300 shadow-sm">
-        <div class="card-body">
+        <div class="card-body p-4 sm:p-6">
           <div class="flex items-center gap-2 mb-4">
             <ng-icon name="heroChartPie" class="text-lg"></ng-icon>
             <h3 class="text-sm font-bold uppercase tracking-widest">Distribucion de Riesgo (Semaforo)</h3>
@@ -110,13 +110,13 @@
     </div>
   </div>
 } @else {
-  <div class="card bg-base-100 border border-base-300 shadow-sm max-w-2xl mx-auto mt-12">
-    <div class="card-body text-center">
-      <div class="w-20 h-20 bg-primary/10 text-primary rounded-full grid place-items-center text-4xl mx-auto mb-4">
+  <div class="card bg-base-100 border border-base-300 shadow-sm max-w-2xl mx-auto mt-6 sm:mt-12">
+    <div class="card-body p-5 sm:p-8 text-center">
+      <div class="w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 text-primary rounded-full grid place-items-center text-3xl sm:text-4xl mx-auto mb-4">
         <ng-icon name="heroUser"></ng-icon>
       </div>
-      <h1 class="text-2xl font-bold mb-2">Bienvenido, Cajero Operativo</h1>
-      <p class="text-sm text-base-content/70 max-w-sm mx-auto">Utiliza el menu lateral para gestionar la caja, revisar el directorio de clientes y registrar microcreditos.</p>
+      <h1 class="text-xl sm:text-2xl font-bold mb-2">Bienvenido, Cajero Operativo</h1>
+      <p class="text-xs sm:text-sm text-base-content/70 max-w-sm mx-auto">Utiliza el menú lateral para gestionar la caja, revisar el directorio de clientes y registrar microcréditos.</p>
     </div>
   </div>
 }

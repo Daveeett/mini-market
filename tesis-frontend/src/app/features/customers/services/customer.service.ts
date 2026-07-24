@@ -18,7 +18,7 @@ export class CustomerService {
     fullName: string;
     phone: string;
     email?: string;
-    address?: string;
+    description?: string;
   }) {
     return this.http.post<ApiResponse<Customer>>(`${environment.apiBaseUrl}/customers`, payload);
   }

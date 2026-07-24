@@ -23,8 +23,8 @@ export class Customer extends BaseEntity {
   @Column({ length: 180, nullable: true })
   email!: string;
 
-  @Column({ length: 250, nullable: true })
-  address!: string;
+  @Column({ name: "description", length: 250, nullable: true })
+  description!: string;
 
   @Column({ name: "is_active", default: true })
   isActive!: boolean;

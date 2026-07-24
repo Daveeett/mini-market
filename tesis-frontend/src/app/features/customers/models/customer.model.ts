@@ -9,6 +9,7 @@ export interface Customer {
   docType: string;
   docNumber: string;
   email?: string;
+  description?: string;
   semaphore?: {
     status: SemaphoreStatus;
     reason: string;

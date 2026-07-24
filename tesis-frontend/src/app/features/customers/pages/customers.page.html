@@ -1,6 +1,6 @@
-<section class="mb-6">
-  <h1 class="text-2xl font-bold">Directorio de Clientes</h1>
-  <p class="text-sm text-base-content/70">Gestion y estado operativo</p>
+<section class="mb-4 sm:mb-6">
+  <h1 class="text-xl sm:text-2xl font-bold">Directorio de Clientes</h1>
+  <p class="text-xs sm:text-sm text-base-content/70">Gestion y estado operativo</p>
 </section>
 
 <div class="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6 items-start">
@@ -12,7 +12,7 @@
       </div>
 
       <div class="overflow-x-auto max-h-[600px]">
-        <table class="table table-zebra">
+        <table class="table table-zebra table-sm sm:table-md">
           <thead>
             <tr>
               <th>Cliente</th>
@@ -33,6 +33,9 @@
                     <div>
                       <div class="font-semibold">{{ customer.fullName }}</div>
                       <div class="text-xs text-base-content/60">{{ customer.phone }}</div>
+                      @if (customer.description) {
+                        <div class="text-[10px] text-base-content/50 mt-0.5 italic">{{ customer.description }}</div>
+                      }
                     </div>
                   </div>
                 </td>
@@ -136,6 +139,13 @@
               <span class="label-text-alt text-error">Email inválido</span>
             </div>
           }
+        </label>
+
+        <label for="customer-description" class="form-control">
+          <div class="label">
+            <span class="label-text text-xs font-bold uppercase tracking-widest">Descripcion (Opcional)</span>
+          </div>
+          <input id="customer-description" formControlName="description" class="input input-bordered w-full" placeholder="Ej. Tienda de la esquina, frente al parque" />
         </label>
 
         <button type="submit" [disabled]="form.invalid" class="btn btn-primary w-full">

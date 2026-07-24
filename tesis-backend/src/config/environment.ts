@@ -16,7 +16,7 @@ export const config: EnvConfig = {
   server: {
     nodeEnv: env("NODE_ENV").default("development").asEnum(["development", "production", "test"]),
     port: env("PORT").default(3000).asPortNumber(),
-    frontendBaseUrl: env("FRONTEND_BASE_URL").default("http://localhost:4200").asString(),
+    frontendBaseUrl: env("FRONTEND_BASE_URL").default("http://localhost:4200",).asString(),
   },
   database: {
     host: env("DB_HOST").default("localhost").asString(),

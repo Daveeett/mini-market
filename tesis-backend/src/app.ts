@@ -13,9 +13,35 @@ export const createApp = () => {
   const app = express();
 
   app.use(helmet());
+  
+  const allowedOrigins = config.server.frontendBaseUrl
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
+
   app.use(
     cors({
-      origin: config.server.frontendBaseUrl,
+      origin: (origin, callback) => {
+        // Permitir solicitudes sin origen (curl, postman, etc)
+        if (!origin) {
+          return callback(null, true);
+        }
+        // Permitir si esta en la lista configurada o si se usa comodin *
+        if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes("*")) {
+          return callback(null, true);
+        }
+        // Permitir localhost e IPs locales (192.168.x.x, 10.x.x.x, 172.16-31.x.x) en desarrollo
+        if (
+          config.isDevelopment &&
+          (origin.startsWith("http://localhost:") ||
+            origin.startsWith("http://127.0.0.1:") ||
+            /^http:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+)(:\d+)?$/.test(origin))
+        ) {
+          return callback(null, true);
+        }
+        callback(null, false);
+      },
+      credentials: true,
     }),
   );
   app.use(compression());

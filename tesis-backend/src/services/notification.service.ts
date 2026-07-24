@@ -7,6 +7,20 @@ import { CreditRepository } from "../repositories/credit.repository";
 import { CreditAccountRepository } from "../repositories/credit-account.repository";
 import { NotificationLogRepository } from "../repositories/notification-log.repository";
 
+const formatPhoneForWhatsapp = (phone: string): string => {
+  // Eliminar caracteres no numericos
+  let cleaned = phone.replace(/\D/g, "");
+  // Si ya tiene el codigo de pais 593 al inicio
+  if (cleaned.startsWith("593")) {
+    return cleaned;
+  }
+  // Si empieza con 0 (ej: 0999999999), remover el 0 inicial
+  if (cleaned.startsWith("0")) {
+    cleaned = cleaned.substring(1);
+  }
+  return `593${cleaned}`;
+};
+
 export class NotificationService {
   private readonly creditRepo = new CreditRepository();
   private readonly accountRepo = new CreditAccountRepository();
@@ -21,7 +35,8 @@ export class NotificationService {
     const tokenResult = await this.statementService.generateTokenByCustomer(customer.id);
     const statementUrl = `${config.server.frontendBaseUrl}/estado-cuenta/${tokenResult.token}`;
     const message = `Estimado cliente ${customer.fullName}, le recordamos cordialmente que tiene un valor pendiente de $${credit.amount} en el Mini Market Urbano. Revise su estado de cuenta aqui: ${statementUrl}`;
-    const waLink = `https://wa.me/${customer.phone}?text=${encodeURIComponent(message)}`;
+    const phoneFormatted = formatPhoneForWhatsapp(customer.phone);
+    const waLink = `https://wa.me/${phoneFormatted}?text=${encodeURIComponent(message)}`;
 
     const log = this.notificationRepo.create({
       customer,
@@ -48,7 +63,8 @@ export class NotificationService {
     const tokenResult = await this.statementService.generateTokenByCustomer(customer.id);
     const statementUrl = `${config.server.frontendBaseUrl}/estado-cuenta/${tokenResult.token}`;
     const message = `Estimado cliente ${customer.fullName}, le recordamos cordialmente que tiene un valor pendiente total de $${account.currentBalance || account.totalDebt} en el Mini Market Urbano. Revise su estado de cuenta detallado aqui: ${statementUrl}`;
-    const waLink = `https://wa.me/${customer.phone}?text=${encodeURIComponent(message)}`;
+    const phoneFormatted = formatPhoneForWhatsapp(customer.phone);
+    const waLink = `https://wa.me/${phoneFormatted}?text=${encodeURIComponent(message)}`;
 
     const log = this.notificationRepo.create({
       customer,

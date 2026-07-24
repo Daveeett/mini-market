@@ -1,6 +1,6 @@
-<section class="mb-6">
-  <h1 class="text-2xl font-bold">Caja y Cuadre Diario</h1>
-  <p class="text-sm text-base-content/70">Registro de apertura, movimientos y cierre.</p>
+<section class="mb-4 sm:mb-6">
+  <h1 class="text-xl sm:text-2xl font-bold">Caja y Cuadre Diario</h1>
+  <p class="text-xs sm:text-sm text-base-content/70">Registro de apertura, movimientos y cierre.</p>
 </section>
 
 <section class="mb-8">
@@ -41,23 +41,23 @@
   @if (currentSession()) {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div class="card bg-primary text-primary-content shadow-lg">
-        <div class="card-body gap-4">
+        <div class="card-body p-4 sm:p-6 gap-4">
           <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-primary-content/70">
             <span class="badge badge-success badge-xs"></span>
             Turno Activo · {{ currentSession()!.openedAt | date:'HH:mm' }}
           </div>
           <div>
-            <p class="text-xs uppercase tracking-widest">Balance Calculado</p>
-            <p class="text-4xl font-mono font-bold">${{ currentCalculatedBalance | number:'1.2-2' }}</p>
+            <p class="text-[10px] sm:text-xs uppercase tracking-widest text-primary-content/85">Balance Calculado</p>
+            <p class="text-2xl sm:text-3xl lg:text-4xl font-mono font-bold">${{ currentCalculatedBalance | number:'1.2-2' }}</p>
           </div>
           <div class="stats stats-vertical bg-primary/20 text-primary-content">
-            <div class="stat">
-              <div class="stat-title text-primary-content/70">Ingresos</div>
-              <div class="stat-value text-lg font-mono">+{{ totalIncomes | number:'1.2-2' }}</div>
+            <div class="stat p-3">
+              <div class="stat-title text-xs text-primary-content/75">Ingresos</div>
+              <div class="stat-value text-base sm:text-lg font-mono">+{{ totalIncomes | number:'1.2-2' }}</div>
             </div>
-            <div class="stat">
-              <div class="stat-title text-primary-content/70">Egresos</div>
-              <div class="stat-value text-lg font-mono">-{{ totalExpenses | number:'1.2-2' }}</div>
+            <div class="stat p-3">
+              <div class="stat-title text-xs text-primary-content/75">Egresos</div>
+              <div class="stat-value text-base sm:text-lg font-mono">-{{ totalExpenses | number:'1.2-2' }}</div>
             </div>
           </div>
         </div>
@@ -130,11 +130,11 @@
 @if (sessionHistory().length > 0) {
   <div class="card bg-base-100 shadow-sm">
     <div class="card-body p-0">
-      <div class="border-b border-base-200 p-5">
+      <div class="border-b border-base-200 p-4 sm:p-5">
         <h2 class="text-sm font-bold uppercase tracking-widest">Historial Operativo</h2>
       </div>
       <div class="overflow-x-auto">
-        <table class="table table-zebra table-sm">
+        <table class="table table-zebra table-xs sm:table-sm">
           <thead>
             <tr>
               <th>Apertura</th>

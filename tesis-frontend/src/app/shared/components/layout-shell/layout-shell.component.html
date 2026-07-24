@@ -1,5 +1,5 @@
 <div class="drawer lg:drawer-open min-h-screen bg-base-200 text-base-content">
-  <input id="app-drawer" type="checkbox" class="drawer-toggle" />
+  <input #drawerToggle id="app-drawer" type="checkbox" class="drawer-toggle" />
 
   <div class="drawer-content flex flex-col">
     <div class="navbar bg-base-100/90 border-b border-base-300 px-4 lg:hidden">
@@ -18,8 +18,8 @@
       <div class="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-10">
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">Operaciones</p>
-            <h1 class="text-2xl font-semibold">Resumen operativo</h1>
+            <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">Operaciones</p>
+            <h1 class="text-xl sm:text-2xl font-semibold">Resumen operativo</h1>
           </div>
 
         </div>
@@ -30,7 +30,7 @@
 
   <div class="drawer-side">
     <label for="app-drawer" class="drawer-overlay" aria-label="Cerrar menu de navegacion"></label>
-    <aside class="w-full bg-base-100 border-r border-base-300 px-4 py-5">
+    <aside class="w-80 max-w-[85vw] min-h-full bg-base-100 border-r border-base-300 px-4 py-5">
       <div class="flex items-center gap-3 mb-6">
         <span class="inline-flex h-10 w-10 items-center justify-center rounded-box bg-primary text-primary-content">
           <ng-icon name="heroBuildingStorefront" class="text-lg"></ng-icon>
@@ -43,40 +43,40 @@
 
       <ul class="menu menu-md w-full ">
         <li>
-          <a routerLink="/dashboard" routerLinkActive="active">
+          <a routerLink="/dashboard" routerLinkActive="active" (click)="drawerToggle.checked = false">
             <ng-icon name="heroHome" class="text-base"></ng-icon>
             Dashboard
           </a>
         </li>
         @if (isAdmin()) {
           <li>
-            <a routerLink="/customers" routerLinkActive="active">
+            <a routerLink="/customers" routerLinkActive="active" (click)="drawerToggle.checked = false">
               <ng-icon name="heroUserGroup" class="text-base"></ng-icon>
               Clientes
             </a>
           </li>
         }
         <li>
-          <a routerLink="/credits" routerLinkActive="active">
+          <a routerLink="/credits" routerLinkActive="active" (click)="drawerToggle.checked = false">
             <ng-icon name="heroBanknotes" class="text-base"></ng-icon>
             Microcreditos
           </a>
         </li>
         <li>
-          <a routerLink="/cash" routerLinkActive="active">
+          <a routerLink="/cash" routerLinkActive="active" (click)="drawerToggle.checked = false">
             <ng-icon name="heroChartBar" class="text-base"></ng-icon>
             Caja
           </a>
         </li>
         @if (isAdmin()) {
           <li>
-            <a routerLink="/reports" routerLinkActive="active">
+            <a routerLink="/reports" routerLinkActive="active" (click)="drawerToggle.checked = false">
               <ng-icon name="heroCheckCircle" class="text-base"></ng-icon>
               Reportes
             </a>
           </li>
           <li>
-            <a routerLink="/users" routerLinkActive="active">
+            <a routerLink="/users" routerLinkActive="active" (click)="drawerToggle.checked = false">
               <ng-icon name="heroUserPlus" class="text-base"></ng-icon>
               Usuarios
             </a>
@@ -104,7 +104,7 @@
         </div>
       }
 
-      <button type="button" (click)="logout()" class="btn btn-outline btn-primary btn-sm w-full mt-4" aria-label="Cerrar sesion">
+      <button type="button" (click)="logout(); drawerToggle.checked = false" class="btn btn-outline btn-primary btn-sm w-full mt-4" aria-label="Cerrar sesion">
         Cerrar sesion
       </button>
     </aside>
