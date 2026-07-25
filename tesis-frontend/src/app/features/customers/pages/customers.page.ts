@@ -23,6 +23,7 @@ export class CustomersPage {
     phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
     email: ['', [Validators.email]],
     description: [''],
+    maxCredit: [10, [Validators.required, Validators.min(0)]],
   });
 
   private readonly destroyRef = inject(DestroyRef);
@@ -47,6 +48,7 @@ export class CustomersPage {
       phone: raw.phone ?? '',
       email: raw.email ?? '',
       description: raw.description ?? '',
+      maxCredit: raw.maxCredit ?? 10,
     };
 
      this.customerService.createCustomer(payload)
@@ -60,6 +62,7 @@ export class CustomersPage {
              phone: '',
              email: '',
              description: '',
+             maxCredit: 10,
            });
            this.loadCustomers();
          },

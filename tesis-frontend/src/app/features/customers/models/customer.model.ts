@@ -10,6 +10,7 @@ export interface Customer {
   docNumber: string;
   email?: string;
   description?: string;
+  maxCredit: number;
   semaphore?: {
     status: SemaphoreStatus;
     reason: string;

@@ -12,4 +12,5 @@ export const createSchema = z.object({
   phone: z.string().regex(regexPhone, "Debe contener exactamente 10 números"),
   email: z.union([z.string().regex(regexEmail), z.literal("")]),
   description: z.string().min(1).max(255).optional(),
+  maxCredit: z.number().positive("El monto debe ser positivo"),
 });

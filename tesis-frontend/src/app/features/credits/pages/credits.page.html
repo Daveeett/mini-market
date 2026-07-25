@@ -60,7 +60,7 @@
             <div class="label">
               <span class="label-text text-xs font-bold uppercase tracking-widest">Vencimiento</span>
             </div>
-            <input id="credit-dueDate" type="date" [(ngModel)]="newCreditDueDate" class="input input-bordered w-full" />
+            <input id="credit-dueDate" type="date" [min]="minDueDate" [(ngModel)]="newCreditDueDate" class="input input-bordered w-full" />
           </label>
 
           <label for="credit-email" class="form-control">

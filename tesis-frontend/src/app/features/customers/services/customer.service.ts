@@ -19,6 +19,7 @@ export class CustomerService {
     phone: string;
     email?: string;
     description?: string;
+    maxCredit: number;
   }) {
     return this.http.post<ApiResponse<Customer>>(`${environment.apiBaseUrl}/customers`, payload);
   }

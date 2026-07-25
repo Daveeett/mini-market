@@ -29,6 +29,7 @@ export class CreditsPage {
 
   newCreditAmount: number | null = null;
   newCreditDueDate = '';
+  minDueDate = new Date().toISOString().split('T')[0];
   newCreditEmail = '';
   isCreating = signal(false);
   createMessage = signal('');
@@ -80,6 +81,8 @@ export class CreditsPage {
       this.createMessage.set('Por favor completa todos los campos (Monto, Fecha, Correo).');
       return;
     }
+
+    const customer = this.customers().find(c => c.id === this.selectedCustomerId);
 
     if (this.semaphore() === 'RED') {
       this.createMessage.set('No se puede crear credito: Cliente en mora (ROJO).');

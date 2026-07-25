@@ -14,6 +14,7 @@ export class CustomerService {
     phone: string;
     email?: string;
     description?: string;
+    maxCredit: number;
   }) {
     const exists = await this.customerRepo.findByDoc(input.docType, input.docNumber);
     if (exists) {

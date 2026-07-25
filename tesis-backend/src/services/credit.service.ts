@@ -116,6 +116,20 @@ export class CreditService {
     if (!customer) throw new AppError("Cliente no encontrado", 404, "CUSTOMER_NOT_FOUND");
     if (!customer.creditAccount) throw new AppError("Cliente no tiene cuenta de credito", 400, "NO_CREDIT_ACCOUNT");
 
+    const currentBalance = Number(customer.creditAccount.currentBalance);
+    const maxCredit = Number(customer.maxCredit);
+    const requestedAmount = Number(input.amount);
+
+    if ((currentBalance + requestedAmount) > maxCredit) {
+      const available = maxCredit - currentBalance;
+      const availableMsg = available > 0 ? available.toFixed(2) : "0.00";
+      throw new AppError(
+        `El monto excede el límite de crédito del cliente. Crédito disponible: S/.${availableMsg}`,
+        400,
+        "CREDIT_LIMIT_EXCEEDED"
+      );
+    }
+
     await this.assertCanCreateCredit(input.customerId);
 
     const isValidDomain = await this.emailService.verifyEmailDomain(input.email);

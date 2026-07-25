@@ -26,6 +26,9 @@ export class Customer extends BaseEntity {
   @Column({ name: "description", length: 250, nullable: true })
   description!: string;
 
+  @Column({ name: "max_credit", default: 10 })
+  maxCredit!: number;
+
   @Column({ name: "is_active", default: true })
   isActive!: boolean;
 
