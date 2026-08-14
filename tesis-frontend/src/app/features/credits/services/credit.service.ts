@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@env';
 import { ApiResponse } from '@shared/models/api.models';
-import { CreditSummary, CreditDetail } from '../models/credit.model';
+import { CreditDetail } from '../interfaces/requests/credit-detail.interface';
+import { CreditSummary } from '../interfaces/requests/credit-summary.model';
 
 @Injectable({ providedIn: 'root' })
 export class CreditService {

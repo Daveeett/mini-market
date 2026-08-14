@@ -6,7 +6,8 @@ import { AuthService } from '@features/auth/services/auth.service';
 import { Chart, DoughnutController, BarController, ArcElement, BarElement,
          CategoryScale, LinearScale, Legend, Tooltip } from 'chart.js';
 import { NgIconComponent } from '@ng-icons/core';
-import { DashboardAlert, DashboardStats } from '../models/dashboard.models';
+import { DashboardAlert } from '../interfaces/request/dashboard-alert.interface';
+import { DashboardStats } from '../interfaces/request/dashboard-stats.interface';
 
 Chart.register(DoughnutController, BarController, ArcElement, BarElement,
                CategoryScale, LinearScale, Legend, Tooltip);

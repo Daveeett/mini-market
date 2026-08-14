@@ -2,7 +2,7 @@ import { Component, signal, DestroyRef, inject, ChangeDetectionStrategy } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomerService } from '../services/customer.service';
-import { Customer } from '../models/customer.model';
+import { Customer } from '../interfaces/requests/customer.interface';
 import { SemaphoreBadgeComponent } from '@shared/components/semaphore-badge/semaphore-badge.component';
 import { NgIconComponent } from '@ng-icons/core';
 

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@env';
 import { ApiResponse } from '@shared/models/api.models';
-import { DashboardAlert, DashboardStats } from '../models/dashboard.models';
+import { DashboardAlert } from '../interfaces/request/dashboard-alert.interface';
+import { DashboardStats } from '../interfaces/request/dashboard-stats.interface';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {

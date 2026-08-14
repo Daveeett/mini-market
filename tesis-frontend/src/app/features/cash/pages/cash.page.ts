@@ -5,7 +5,9 @@ import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { NgIconComponent } from '@ng-icons/core';
 import { CashService } from '../services/cash.service';
 import { ToastService } from '@shared/services/toast.service';
-import { CashSession, CashMovement, CashHistoryEntry } from '../models/cash.model';
+import { CashSession } from '../interfaces/requests/cash-session.interface';
+import { CashMovement } from '../interfaces/requests/cash-movement.interfaces';
+import { CashHistoryEntry } from '../interfaces/requests/cash-history-entry.interface';
 
 @Component({
     selector: 'app-cash-page',

@@ -3,7 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
-import { AuthService, LoginData } from '../services/auth.service';
+import { AuthService } from '../services/auth.service';
+import { LoginData } from '../interfaces/requests/login-data.interface';
 import { ToastService } from '@shared/services/toast.service';
 import { ApiResponse } from '@shared/models/api.models';
 

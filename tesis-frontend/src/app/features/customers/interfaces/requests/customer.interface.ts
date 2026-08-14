@@ -1,6 +1,4 @@
-import { SemaphoreStatus } from '@shared/models/semaphore.model';
-
-export { SemaphoreStatus };
+import { SemaphoreStatus } from "@shared/models/semaphore.model";
 
 export interface Customer {
   id: string;

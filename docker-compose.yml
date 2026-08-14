@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./tesis-backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # - DB_HOST=postgres
+      # - DB_PORT=5432
+      # Add other environment variables from your .env file here
+    networks:
+      - mini-market-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./tesis-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    networks:
+      - mini-market-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  mini-market-network:
+    driver: bridge

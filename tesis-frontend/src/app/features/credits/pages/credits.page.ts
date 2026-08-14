@@ -4,12 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { DatePipe, NgClass } from '@angular/common';
 import { CreditService } from '../services/credit.service';
 import { CustomerService } from '@features/customers/services/customer.service';
-import { CreditSummary } from '../models/credit.model';
-import { Customer } from '@features/customers/models/customer.model';
+import { Customer } from '@features/customers/interfaces/requests/customer.interface';
 import { SemaphoreStatus } from '@shared/models/semaphore.model';
 import { SemaphoreBadgeComponent } from '@shared/components/semaphore-badge/semaphore-badge.component';
 import { ToastService } from '@shared/services/toast.service';
 import { NgIconComponent } from '@ng-icons/core';
+import { CreditSummary } from '../interfaces/requests/credit-summary.model';
 
 @Component({
     selector: 'app-credits-page',

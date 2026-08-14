@@ -4,23 +4,11 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { environment } from '@env';
 import { ApiResponse } from '@shared/models/api.models';
+import { Login } from '../interfaces/requests/login.interface';
+import { AuthUser } from '../interfaces/requests/auth-user.interface';
+import { LoginData } from '../interfaces/requests/login-data.interface';
 
-interface LoginPayload {
-  email: string;
-  password: string;
-}
 
-export interface AuthUser {
-  id: string;
-  name: string;
-  email: string;
-  role: 'ADMIN' | 'CAJERO';
-}
-
-export interface LoginData {
-  token: string;
-  user: AuthUser;
-}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -48,9 +36,9 @@ export class AuthService {
     return this.userSignal()?.role ?? null;
   }
 
-  login(payload: LoginPayload) {
+  login(request: Login) {
     return this.http
-      .post<ApiResponse<LoginData>>(`${environment.apiBaseUrl}/auth/login`, payload)
+      .post<ApiResponse<LoginData>>(`${environment.apiBaseUrl}/auth/login`, request)
       .pipe(
         tap((response) => {
           localStorage.setItem(this.tokenKey, response.data.token);

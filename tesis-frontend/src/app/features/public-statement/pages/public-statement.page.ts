@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { PublicStatementService } from '../services/public-statement.service';
+import { PublicStatementResponse } from '../interfaces/responses/public-statement-response.interface';
 
 @Component({
     selector: 'app-public-statement-page',
@@ -12,18 +13,7 @@ import { PublicStatementService } from '../services/public-statement.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PublicStatementPage {
-  readonly statement = signal<{
-    customer: { name: string; phone: string };
-    totals: { totalDebt: string; totalPaid: string; pending: string };
-    credits: Array<{
-      id: string;
-      createdAt: string;
-      dueDate: string;
-      amount: string;
-      status: string;
-      items: Array<{ qty: number; subtotal: string; product: { name: string } }>;
-    }>;
-  } | null>(null);
+  readonly statement = signal<PublicStatementResponse | null>(null);
 
   private readonly destroyRef = inject(DestroyRef);
 
