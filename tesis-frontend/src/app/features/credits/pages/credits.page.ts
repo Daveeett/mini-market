@@ -116,6 +116,11 @@ export class CreditsPage {
       });
   }
 
+  selectedCreditForPayment = signal<CreditSummary | null>(null);
+  paymentAmount: number | null = null;
+  paymentMethod: 'CASH' | 'TRANSFER' = 'CASH';
+  isProcessingPayment = signal(false);
+
   sendGeneralReminder(): void {
     if (!this.selectedCustomerId) return;
      this.creditService.notifyGeneralDebt(this.selectedCustomerId)
@@ -129,5 +134,46 @@ export class CreditsPage {
            this.toast.error(err.error?.message || 'Error al notificar deuda.');
          }
        });
+  }
+
+  openPaymentModal(credit: CreditSummary): void {
+    this.selectedCreditForPayment.set(credit);
+    this.paymentAmount = Number(credit.amount);
+    this.paymentMethod = 'CASH';
+  }
+
+  closePaymentModal(): void {
+    this.selectedCreditForPayment.set(null);
+    this.paymentAmount = null;
+  }
+
+  confirmPayment(): void {
+    const credit = this.selectedCreditForPayment();
+    if (!credit || !this.paymentAmount || this.paymentAmount <= 0) {
+      this.toast.error('Por favor ingresa un monto de pago válido.');
+      return;
+    }
+
+    this.isProcessingPayment.set(true);
+
+    this.creditService.registerPayment({
+      creditId: credit.id,
+      amount: Number(this.paymentAmount),
+      method: this.paymentMethod,
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isProcessingPayment.set(false);
+          this.toast.success('Pago registrado exitosamente. Deuda cancelada/actualizada.');
+          this.closePaymentModal();
+          this.loadCredits();
+        },
+        error: (err) => {
+          this.isProcessingPayment.set(false);
+          const msg = err.error?.message || err.message || 'Error al registrar pago.';
+          this.toast.error(msg);
+        }
+      });
   }
 }

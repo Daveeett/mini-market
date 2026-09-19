@@ -1,5 +1,8 @@
 @if (statement(); as data) {
-  <section class="max-w-4xl mx-auto my-4 sm:my-8 px-4 sm:px-0">
+  <section class="max-w-4xl mx-auto my-4 sm:my-8 px-4 sm:px-0 flex flex-col gap-4">
+    <!-- Top Leaderboard Ad for Customers -->
+    <app-ad-banner type="header"></app-ad-banner>
+
     <div class="card bg-base-100 shadow-xl border border-base-300 overflow-hidden">
       <div class="card-body p-0">
         <header class="bg-primary text-primary-content px-4 py-6 sm:px-8 sm:py-10 text-center">
@@ -22,6 +25,80 @@
               <div class="stat-value text-error text-2xl sm:text-3xl lg:text-4xl">${{ data.totals.pending }}</div>
             </div>
           </div>
+
+          <!-- Offers Section for Customer -->
+          @if (data.offers && data.offers.length > 0) {
+            <div class="rounded-2xl bg-gradient-to-br from-amber-500/10 via-red-500/5 to-primary/10 border-2 border-amber-400/40 p-5 sm:p-7 shadow-lg relative overflow-hidden">
+              <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 to-red-600 text-white shadow-md">
+                    <ng-icon name="heroSparkles" class="text-xl animate-bounce"></ng-icon>
+                  </span>
+                  <div>
+                    <h2 class="text-lg sm:text-xl font-black uppercase tracking-wide bg-gradient-to-r from-amber-600 via-red-600 to-primary bg-clip-text text-transparent">
+                      ¡Promociones Exclusivas Para Ti!
+                    </h2>
+                    <p class="text-xs text-base-content/70">Aprovecha estos descuentos especiales en tu próxima visita al minimarket.</p>
+                  </div>
+                </div>
+                <span class="badge badge-error text-white font-extrabold text-xs tracking-widest px-3 py-2 shadow-sm animate-pulse">
+                  ¡TIEMPO LIMITADO!
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @for (offer of data.offers; track offer.id) {
+                  <div class="card bg-base-100/90 backdrop-blur border border-amber-300/50 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group">
+                    <div class="relative h-48 w-full overflow-hidden bg-base-200">
+                      <img
+                        [src]="offer.imageUrl || '/assets/images/offer_combo_grocery.jpg'"
+                        [alt]="offer.title"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                      
+                      @if (offer.badgeTag) {
+                        <span class="absolute top-3 left-3 bg-gradient-to-r from-amber-500 to-red-600 text-white font-black text-xs uppercase px-3 py-1.5 rounded-full shadow-lg border border-amber-200 tracking-wider">
+                          {{ offer.badgeTag }}
+                        </span>
+                      }
+
+                      <div class="absolute bottom-3 left-4 right-4 text-white">
+                        <h3 class="text-base sm:text-lg font-extrabold leading-tight text-white drop-shadow-md">
+                          {{ offer.title }}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <div class="p-4 sm:p-5 flex-1 flex flex-col justify-between gap-4">
+                      <p class="text-xs sm:text-sm text-base-content/80 leading-relaxed">
+                        {{ offer.description }}
+                      </p>
+
+                      <div class="flex items-center justify-between pt-3 border-t border-base-200 mt-auto">
+                        <div class="flex flex-col">
+                          <span class="text-[10px] uppercase font-bold text-base-content/50">Precio Especial</span>
+                          <div class="flex items-baseline gap-2">
+                            @if (offer.offerPrice) {
+                              <span class="text-xl font-extrabold text-success font-mono">${{ offer.offerPrice }}</span>
+                            }
+                            @if (offer.originalPrice) {
+                              <span class="text-xs font-mono text-base-content/40 line-through">${{ offer.originalPrice }}</span>
+                            }
+                          </div>
+                        </div>
+
+                        <span class="btn btn-primary btn-xs sm:btn-sm gap-1 shadow-md hover:scale-105 transition-transform">
+                          <ng-icon name="heroShoppingBag"></ng-icon>
+                          Pedir en Caja
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
 
           <div>
             <h2 class="text-lg sm:text-xl font-bold mb-4">Detalle de Movimientos</h2>
@@ -53,13 +130,88 @@
             </div>
           </div>
 
-          <div class="card bg-primary text-primary-content shadow-lg">
-            <div class="card-body text-center">
-              <h3 class="m-0 mb-2 text-lg font-bold">Datos para Transferencia Directa</h3>
-              <p class="my-1">Banco Pichincha - Cuenta Ahorros 123456789</p>
-              <p class="my-1">Titular: Mini Market Urbano</p>
+          <!-- Native Feed Ad Placement -->
+          <app-ad-banner type="native"></app-ad-banner>
+
+          <!-- VIP Bank Deposit Card (Atractivo & Interactivo) -->
+          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500/20 via-slate-900 to-amber-950 border-2 border-amber-400/50 p-6 sm:p-8 shadow-2xl">
+            <!-- Background Chip Graphic -->
+            <div class="absolute -right-8 -bottom-8 w-40 h-40 rounded-full bg-amber-400/10 blur-2xl pointer-events-none"></div>
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-amber-400/30 pb-5 mb-5">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 font-black flex items-center justify-center text-xl shadow-lg shrink-0">
+                  <ng-icon name="heroBuildingLibrary"></ng-icon>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="badge badge-warning font-black text-[10px] uppercase tracking-wider">Pago Directo</span>
+                    <span class="text-xs text-amber-300 font-semibold flex items-center gap-1">
+                      <ng-icon name="heroShieldCheck" class="text-amber-400"></ng-icon>
+                      Verificado 100% Seguro
+                    </span>
+                  </div>
+                  <h3 class="text-lg sm:text-xl font-extrabold text-white m-0">Datos para Transferencia / Depósito</h3>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              <!-- Account Number & Details -->
+              <div class="flex flex-col gap-3">
+                <div>
+                  <span class="text-xs font-bold uppercase tracking-widest text-amber-300/80">Banco Destino</span>
+                  <p class="text-base sm:text-lg font-black text-white m-0 flex items-center gap-2">
+                    Banco Pichincha
+                    <span class="badge badge-outline badge-xs text-amber-300 border-amber-400">Cuenta de Ahorros</span>
+                  </p>
+                </div>
+
+                <div>
+                  <span class="text-xs font-bold uppercase tracking-widest text-amber-300/80">Titular de la Cuenta</span>
+                  <p class="text-base font-bold text-white m-0">Mini Market Urbano</p>
+                </div>
+
+                <div class="mt-1">
+                  <span class="text-xs font-bold uppercase tracking-widest text-amber-300/80">Número de Cuenta</span>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-2xl sm:text-3xl font-mono font-black tracking-wider text-amber-400 bg-slate-950/80 px-4 py-2 rounded-xl border border-amber-400/40 shadow-inner">
+                      123456789
+                    </span>
+                    <button
+                      type="button"
+                      (click)="copyAccount()"
+                      class="btn btn-warning btn-md font-extrabold text-slate-950 shadow-lg hover:scale-105 transition-transform"
+                    >
+                      @if (copied()) {
+                        <ng-icon name="heroCheckCircle" class="text-lg text-emerald-900"></ng-icon>
+                        ¡Copiado!
+                      } @else {
+                        <ng-icon name="heroDocumentDuplicate" class="text-lg"></ng-icon>
+                        Copiar N°
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Instructions Badge -->
+              <div class="bg-slate-950/70 rounded-2xl p-4 sm:p-5 border border-amber-400/20 flex flex-col gap-2">
+                <h4 class="text-xs font-extrabold uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
+                  <ng-icon name="heroInformationCircle"></ng-icon>
+                  ¿Cómo notificar tu pago?
+                </h4>
+                <ol class="text-xs text-slate-300 space-y-1.5 list-decimal list-inside pl-1">
+                  <li>Realiza la transferencia en la app de tu banco.</li>
+                  <li>Envía la foto del comprobante al WhatsApp del minimarket.</li>
+                  <li>Tu saldo se actualizará automáticamente.</li>
+                </ol>
+              </div>
             </div>
           </div>
+
+          <!-- Footer Ad Widget -->
+          <app-ad-banner type="footer"></app-ad-banner>
         </div>
       </div>
     </div>

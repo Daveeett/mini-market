@@ -2,6 +2,7 @@ import { CreditAccountStatus } from "../entities/enums/credit-account-status.enu
 import { AppError } from "../utils/app-error.util";
 import { CustomerRepository } from "../repositories/customer.repository";
 import { CreditAccountRepository } from "../repositories/credit-account.repository";
+import { calculateSemaphore } from "../utils/semaphore.util";
 
 export class CustomerService {
   private readonly customerRepo = new CustomerRepository();
@@ -38,14 +39,25 @@ export class CustomerService {
   }
 
   async findAll() {
-    return this.customerRepo.findAllWithAccount();
+    const customers = await this.customerRepo.findAllWithAccountAndCredits();
+    return customers.map(customer => {
+      const credits = customer.creditAccount?.credits || [];
+      return {
+        ...customer,
+        semaphore: calculateSemaphore(credits, 7) // Assuming 7 days for "due soon"
+      };
+    });
   }
 
   async findById(customerId: string) {
-    const customer = await this.customerRepo.findByIdWithAccount(customerId);
+    const customer = await this.customerRepo.findByIdWithAccountAndCredits(customerId);
     if (!customer) {
       throw new AppError("Cliente no encontrado", 404, "CUSTOMER_NOT_FOUND");
     }
-    return customer;
+    const credits = customer.creditAccount?.credits || [];
+    return {
+      ...customer,
+      semaphore: calculateSemaphore(credits, 7)
+    };
   }
 }

@@ -43,7 +43,8 @@ export const routes: Routes = [
 			},
 			{
 				path: 'cash',
-				loadComponent: () => import('./features/cash/pages/cash.page').then((m) => m.CashPage),
+				redirectTo: 'dashboard',
+				pathMatch: 'full',
 			},
 			{
 				path: 'reports',
@@ -56,6 +57,12 @@ export const routes: Routes = [
 				canActivate: [adminGuard],
 				loadComponent: () =>
 					import('./features/users/pages/users.page').then((m) => m.UsersPage),
+			},
+			{
+				path: 'offers',
+				canActivate: [adminGuard],
+				loadComponent: () =>
+					import('./features/offers/pages/offers.page').then((m) => m.OffersPage),
 			},
 			{ path: '', pathMatch: 'full', redirectTo: 'dashboard' },
 		],

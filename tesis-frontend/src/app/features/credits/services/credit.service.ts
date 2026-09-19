@@ -42,4 +42,16 @@ export class CreditService {
       ApiResponse<{ waLink: string; message: string; statementUrl: string }>
     >(`${environment.apiBaseUrl}/notifications/whatsapp/customer/${customerId}`, {});
   }
+
+  registerPayment(payload: {
+    creditId: string;
+    amount: number;
+    method: 'CASH' | 'TRANSFER';
+    reference?: string;
+  }) {
+    return this.http.post<ApiResponse<any>>(
+      `${environment.apiBaseUrl}/credits/payment`,
+      payload,
+    );
+  }
 }

@@ -8,10 +8,22 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
-      # - DB_HOST=postgres
-      # - DB_PORT=5432
-      # Add other environment variables from your .env file here
+      - NODE_ENV=development
+      - PORT=3000
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=david181218
+      - DB_NAME=mini_market_urbano
+      - DB_SSL=false
+      - JWT_SECRET="jaskjJKLNSHUQOpasjUHBXn"
+      - JWT_EXPIRES_IN=12h
+      - DUE_SOON_DAYS=3
+      - "BANK_ACCOUNT_TEXT=Banco Pichincha - Cuenta Ahorros 123456789 - Titular: Mini Market Urbano"
+      - EMAIL_USER=davidalbertotumbaco@gmail.com
+      - EMAIL_PASS=plrcytzxwhlgnaet
+      - FRONTEND_BASE_URL=http://localhost:4200,http://192.168.100.96:4200
+      - DATABASE_URL="postgresql://admin_market:P@ssw0rd_Segura_2026@db-market-urbano-prod.postgres.database.azure.com:5432/mini_market_db?sslmode=require"
     networks:
       - mini-market-network
     restart: unless-stopped

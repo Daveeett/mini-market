@@ -1,0 +1,242 @@
+<section class="mb-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
+        <ng-icon name="heroTag" class="text-primary text-2xl"></ng-icon>
+        Gestión de Ofertas y Promociones
+      </h1>
+      <p class="text-xs sm:text-sm text-base-content/70">
+        Crea promociones exclusivas que se mostrarán en el Estado de Cuenta Digital de tus clientes.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 items-start">
+  <!-- Form Panel -->
+  <div class="card bg-base-100 border border-base-300 shadow-sm sticky top-4">
+    <div class="card-body p-5 sm:p-6">
+      <h2 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2 mb-4">
+        <ng-icon [name]="editingId ? 'heroPencilSquare' : 'heroPlusCircle'" class="text-lg text-primary"></ng-icon>
+        {{ editingId ? 'Editar Oferta' : 'Nueva Oferta Promocional' }}
+      </h2>
+
+      <div class="flex flex-col gap-4">
+        <label for="offer-title" class="form-control">
+          <div class="label py-1">
+            <span class="label-text text-xs font-bold uppercase tracking-widest">Título de la Oferta *</span>
+          </div>
+          <input
+            id="offer-title"
+            type="text"
+            [(ngModel)]="title"
+            placeholder="Ej. Combo Desayuno Saludable 2x1"
+            class="input input-bordered input-sm w-full"
+          />
+        </label>
+
+        <label for="offer-badge" class="form-control">
+          <div class="label py-1">
+            <span class="label-text text-xs font-bold uppercase tracking-widest">Etiqueta / Badge (ej. 20% OFF, 2x1)</span>
+          </div>
+          <input
+            id="offer-badge"
+            type="text"
+            [(ngModel)]="badgeTag"
+            placeholder="Ej. ¡25% OFF! o ¡2x1!"
+            class="input input-bordered input-sm w-full font-bold text-primary"
+          />
+        </label>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label for="offer-orig-price" class="form-control">
+            <div class="label py-1">
+              <span class="label-text text-xs font-bold uppercase tracking-widest">Precio Normal ($)</span>
+            </div>
+            <input
+              id="offer-orig-price"
+              type="text"
+              [(ngModel)]="originalPrice"
+              placeholder="12.50"
+              class="input input-bordered input-sm w-full font-mono"
+            />
+          </label>
+
+          <label for="offer-price" class="form-control">
+            <div class="label py-1">
+              <span class="label-text text-xs font-bold uppercase tracking-widest">Precio Oferta ($)</span>
+            </div>
+            <input
+              id="offer-price"
+              type="text"
+              [(ngModel)]="offerPrice"
+              placeholder="9.99"
+              class="input input-bordered input-sm w-full font-mono font-bold text-success"
+            />
+          </label>
+        </div>
+
+        <label for="offer-desc" class="form-control">
+          <div class="label py-1">
+            <span class="label-text text-xs font-bold uppercase tracking-widest">Descripción Atractiva *</span>
+          </div>
+          <textarea
+            id="offer-desc"
+            [(ngModel)]="description"
+            rows="3"
+            placeholder="Describe qué incluye la oferta y por qué le conviene al cliente..."
+            class="textarea textarea-bordered textarea-sm w-full"
+          ></textarea>
+        </label>
+
+        <label for="offer-image" class="form-control">
+          <div class="label py-1">
+            <span class="label-text text-xs font-bold uppercase tracking-widest">Seleccionar Imagen Promocional</span>
+          </div>
+          <div class="flex gap-2">
+            @for (img of presetImages; track img.url) {
+              <button
+                type="button"
+                (click)="imageUrl = img.url"
+                class="btn btn-xs flex-1"
+                [class.btn-primary]="imageUrl === img.url"
+                [class.btn-outline]="imageUrl !== img.url"
+              >
+                {{ img.label }}
+              </button>
+            }
+          </div>
+          <input
+            id="offer-image"
+            type="text"
+            [(ngModel)]="imageUrl"
+            placeholder="URL de imagen (/assets/images/...)"
+            class="input input-bordered input-sm w-full mt-2 font-mono text-xs"
+          />
+        </label>
+
+        <div class="form-control mt-1">
+          <label class="label cursor-pointer justify-start gap-3">
+            <input type="checkbox" [(ngModel)]="active" class="checkbox checkbox-primary checkbox-sm" />
+            <span class="label-text text-sm font-semibold">Oferta Activa (Visible para clientes)</span>
+          </label>
+        </div>
+
+        <div class="flex gap-2 mt-2">
+          <button (click)="saveOffer()" [disabled]="saving()" class="btn btn-primary btn-sm flex-1">
+            @if (saving()) {
+              <span class="loading loading-spinner loading-xs"></span>
+            } @else {
+              <ng-icon name="heroCheckCircle"></ng-icon>
+            }
+            {{ editingId ? 'Actualizar Oferta' : 'Publicar Oferta' }}
+          </button>
+
+          @if (editingId) {
+            <button (click)="resetForm()" class="btn btn-ghost btn-sm">
+              Cancelar
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offers Grid / List -->
+  <div class="flex flex-col gap-4">
+    <div class="flex items-center justify-between">
+      <h2 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2">
+        <ng-icon name="heroSparkles" class="text-warning text-lg"></ng-icon>
+        Ofertas Registradas ({{ offers().length }})
+      </h2>
+      @if (loading()) {
+        <span class="loading loading-spinner loading-xs text-primary"></span>
+      }
+    </div>
+
+    @if (!offers().length && !loading()) {
+      <div class="card bg-base-100 border border-base-300 p-8 text-center">
+        <p class="text-sm text-base-content/60">No hay ofertas creadas. Utiliza el formulario lateral para agregar tu primera promoción.</p>
+      </div>
+    }
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      @for (offer of offers(); track offer.id) {
+        <div class="card bg-base-100 border border-base-300 shadow-sm overflow-hidden flex flex-col justify-between" [class.opacity-60]="!offer.active">
+          <!-- Image Header -->
+          <div class="relative h-44 w-full bg-base-200 overflow-hidden">
+            <img [src]="offer.imageUrl || '/assets/images/offer_combo_grocery.jpg'" [alt]="offer.title" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            
+            @if (offer.badgeTag) {
+              <span class="absolute top-3 left-3 bg-gradient-to-r from-amber-500 to-red-600 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-lg border border-amber-300 animate-pulse">
+                {{ offer.badgeTag }}
+              </span>
+            }
+
+            <span
+              class="absolute top-3 right-3 badge badge-sm font-bold shadow-md"
+              [class.badge-success]="offer.active"
+              [class.badge-ghost]="!offer.active"
+            >
+              {{ offer.active ? 'Activa' : 'Inactiva' }}
+            </span>
+
+            <div class="absolute bottom-3 left-3 right-3 text-white">
+              <h3 class="text-base font-extrabold leading-tight text-white drop-shadow-md">{{ offer.title }}</h3>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="p-4 flex-1 flex flex-col justify-between gap-3">
+            <p class="text-xs text-base-content/80 line-clamp-3 leading-relaxed">
+              {{ offer.description }}
+            </p>
+
+            <div class="flex items-center justify-between border-t border-base-200 pt-3 mt-auto">
+              <div>
+                @if (offer.offerPrice) {
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-lg font-mono font-extrabold text-success">${{ offer.offerPrice }}</span>
+                    @if (offer.originalPrice) {
+                      <span class="text-xs font-mono text-base-content/50 line-through">${{ offer.originalPrice }}</span>
+                    }
+                  </div>
+                } @else if (offer.originalPrice) {
+                  <span class="text-base font-mono font-bold text-base-content">${{ offer.originalPrice }}</span>
+                }
+              </div>
+
+              <div class="flex items-center gap-1">
+                <button
+                  type="button"
+                  (click)="toggleActive(offer)"
+                  class="btn btn-ghost btn-xs"
+                  [title]="offer.active ? 'Desactivar oferta' : 'Activar oferta'"
+                >
+                  <ng-icon [name]="offer.active ? 'heroEye' : 'heroEyeSlash'" class="text-sm"></ng-icon>
+                </button>
+                <button
+                  type="button"
+                  (click)="editOffer(offer)"
+                  class="btn btn-ghost btn-xs text-info"
+                  title="Editar oferta"
+                >
+                  <ng-icon name="heroPencilSquare" class="text-sm"></ng-icon>
+                </button>
+                <button
+                  type="button"
+                  (click)="deleteOffer(offer.id)"
+                  class="btn btn-ghost btn-xs text-error"
+                  title="Eliminar oferta"
+                >
+                  <ng-icon name="heroTrash" class="text-sm"></ng-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

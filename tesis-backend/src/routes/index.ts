@@ -12,11 +12,13 @@ import { dashboardRoutes } from "./dashboard.routes";
 import { notificationRoutes } from "./notification.routes";
 import { statementRoutes } from "./statement.routes";
 import { reportRoutes } from "./report.routes";
+import { offerRoutes } from "./offer.routes";
 
 export const router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/public", publicRoutes);
+router.use("/offers", offerRoutes);
 
 // All routes below require authentication
 router.use(requireAuth);

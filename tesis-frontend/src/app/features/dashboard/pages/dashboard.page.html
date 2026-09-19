@@ -36,23 +36,7 @@
 
   <div class="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-6 mb-8 items-start">
     <div class="flex flex-col gap-6">
-      <div class="card bg-base-100 border border-base-300 shadow-sm">
-        <div class="card-body p-4 sm:p-6">
-          <div class="flex items-center gap-2 mb-4">
-            <ng-icon name="heroBanknotes" class="text-lg"></ng-icon>
-            <h3 class="text-sm font-bold uppercase tracking-widest">Movimientos de Caja (Ultimos 7 dias)</h3>
-          </div>
-          @if (!statsData()) {
-            <p class="text-xs text-base-content/60 text-center py-10">Cargando datos...</p>
-          }
-          @if (statsData() && !hasCashData()) {
-            <p class="text-xs text-base-content/60 text-center py-10 border border-dashed border-base-300 rounded-box">
-              Sin movimientos recientes.
-            </p>
-          }
-          <canvas #cashChart></canvas>
-        </div>
-      </div>
+
 
       <div class="card bg-base-100 border border-base-300 shadow-sm">
         <div class="card-body p-4 sm:p-6">
@@ -116,7 +100,7 @@
         <ng-icon name="heroUser"></ng-icon>
       </div>
       <h1 class="text-xl sm:text-2xl font-bold mb-2">Bienvenido, Cajero Operativo</h1>
-      <p class="text-xs sm:text-sm text-base-content/70 max-w-sm mx-auto">Utiliza el menú lateral para gestionar la caja, revisar el directorio de clientes y registrar microcréditos.</p>
+      <p class="text-xs sm:text-sm text-base-content/70 max-w-sm mx-auto">Utiliza el menú lateral para revisar el directorio de clientes y registrar microcréditos.</p>
     </div>
   </div>
 }

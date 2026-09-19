@@ -62,12 +62,7 @@
             Microcreditos
           </a>
         </li>
-        <li>
-          <a routerLink="/cash" routerLinkActive="active" (click)="drawerToggle.checked = false">
-            <ng-icon name="heroChartBar" class="text-base"></ng-icon>
-            Caja
-          </a>
-        </li>
+
         @if (isAdmin()) {
           <li>
             <a routerLink="/reports" routerLinkActive="active" (click)="drawerToggle.checked = false">
@@ -79,6 +74,12 @@
             <a routerLink="/users" routerLinkActive="active" (click)="drawerToggle.checked = false">
               <ng-icon name="heroUserPlus" class="text-base"></ng-icon>
               Usuarios
+            </a>
+          </li>
+          <li>
+            <a routerLink="/offers" routerLinkActive="active" (click)="drawerToggle.checked = false">
+              <ng-icon name="heroTag" class="text-base"></ng-icon>
+              Ofertas
             </a>
           </li>
         }

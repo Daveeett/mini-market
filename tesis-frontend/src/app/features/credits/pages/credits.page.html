@@ -131,14 +131,84 @@
                     Vence: <strong class="text-base-content">{{ credit.dueDate | date: 'dd/MM/yyyy' }}</strong>
                   </span>
                 </div>
-                <div class="text-left sm:text-right">
-                  <span class="block text-lg sm:text-xl font-mono font-bold text-primary">${{ credit.amount }}</span>
+                <div class="flex items-center gap-3 text-left sm:text-right">
+                  <div>
+                    <span class="block text-lg sm:text-xl font-mono font-bold text-primary">${{ credit.amount }}</span>
+                  </div>
+                  @if (credit.status !== 'PAID') {
+                    <button
+                      type="button"
+                      (click)="openPaymentModal(credit)"
+                      class="btn btn-success btn-xs font-bold gap-1 shadow-sm hover:scale-105 transition-transform"
+                    >
+                      <ng-icon name="heroBanknotes" class="text-sm"></ng-icon>
+                      Pagar en Efectivo
+                    </button>
+                  }
                 </div>
               </article>
             }
           </div>
         </div>
       </div>
+
+      <!-- Modal para Registrar Pago de Deuda -->
+      @if (selectedCreditForPayment(); as credit) {
+        <div class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+          <div class="card bg-base-100 border border-base-300 shadow-2xl w-full max-w-md">
+            <div class="card-body p-6">
+              <div class="flex items-center justify-between border-b border-base-200 pb-3 mb-2">
+                <h3 class="text-base font-bold flex items-center gap-2">
+                  <ng-icon name="heroBanknotes" class="text-success text-xl"></ng-icon>
+                  Cancelar / Registrar Pago
+                </h3>
+                <button (click)="closePaymentModal()" class="btn btn-ghost btn-xs btn-square">✕</button>
+              </div>
+
+              <p class="text-xs text-base-content/70">
+                Cliente pagó en efectivo. Confirma el monto recibido para liquidar la deuda del crédito ID: <strong class="font-mono text-primary">{{ credit.id.slice(0, 8) }}</strong>.
+              </p>
+
+              <div class="flex flex-col gap-4 mt-4">
+                <label for="modal-payment-amount" class="form-control">
+                  <div class="label py-1">
+                    <span class="label-text text-xs font-bold uppercase tracking-widest">Monto Recibido ($)</span>
+                  </div>
+                  <input
+                    id="modal-payment-amount"
+                    type="number"
+                    step="0.01"
+                    [(ngModel)]="paymentAmount"
+                    class="input input-bordered input-lg font-mono font-bold text-success text-center text-2xl w-full"
+                  />
+                </label>
+
+                <label for="modal-payment-method" class="form-control">
+                  <div class="label py-1">
+                    <span class="label-text text-xs font-bold uppercase tracking-widest">Método de Pago</span>
+                  </div>
+                  <select id="modal-payment-method" [(ngModel)]="paymentMethod" class="select select-bordered w-full font-bold">
+                    <option value="CASH">Efectivo en Tienda (Caja)</option>
+                    <option value="TRANSFER">Transferencia Bancaria Directa</option>
+                  </select>
+                </label>
+
+                <div class="flex gap-2 mt-2">
+                  <button (click)="confirmPayment()" [disabled]="isProcessingPayment()" class="btn btn-success flex-1 font-bold">
+                    @if (isProcessingPayment()) {
+                      <span class="loading loading-spinner loading-xs"></span>
+                    } @else {
+                      <ng-icon name="heroCheckCircle"></ng-icon>
+                    }
+                    Confirmar Pago y Cancelar
+                  </button>
+                  <button (click)="closePaymentModal()" class="btn btn-ghost">Cancelar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
     }
 
     @if (selectedCustomerId && credits().length === 0) {

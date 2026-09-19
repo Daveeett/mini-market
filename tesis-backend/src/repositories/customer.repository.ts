@@ -24,10 +24,24 @@ export class CustomerRepository {
     });
   }
 
+  findByIdWithAccountAndCredits(customerId: string) {
+    return this.repo.findOne({
+      where: { id: customerId },
+      relations: { creditAccount: { credits: true } },
+    });
+  }
+
   findAllWithAccount() {
     return this.repo.find({
       order: { createdAt: "DESC" },
       relations: { creditAccount: true },
+    });
+  }
+
+  findAllWithAccountAndCredits() {
+    return this.repo.find({
+      order: { createdAt: "DESC" },
+      relations: { creditAccount: { credits: true } },
     });
   }
 

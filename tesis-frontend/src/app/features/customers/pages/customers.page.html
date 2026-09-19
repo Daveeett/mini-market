@@ -43,7 +43,7 @@
                   {{ customer.docType }} - {{ customer.docNumber }}
                 </td>
                 <td class="text-right">
-                  <app-semaphore-badge [status]="customer.semaphore?.status ?? 'GREEN'"></app-semaphore-badge>
+                  <app-semaphore-badge [status]="customer.semaphore?.status || 'GREEN'"></app-semaphore-badge>
                 </td>
               </tr>
             }
