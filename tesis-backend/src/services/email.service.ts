@@ -117,7 +117,7 @@ export class EmailService {
           console.error("Tambien fallo Ethereal:", testError);
         }
       }
-      throw new AppError("Error al enviar el correo electrónico. Verifique su EMAIL_PASS.", 500, "EMAIL_ERROR");
+      throw new AppError(`Error al enviar el correo electrónico. Verifique su EMAIL_PASS. Detalle técnico: ${error instanceof Error ? error.message : String(error)}`, 500, "EMAIL_ERROR");
     }
   }
 }
