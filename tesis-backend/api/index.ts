@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../src/config/data-source";
 import { createApp } from "../src/app";
+import { seedAdmin } from "../src/services/seed.service";
 
 // Evita que la base de datos se intente inicializar multiples veces por los "cold starts" de Vercel
 let initialized = false;
@@ -9,6 +10,10 @@ const initializeDb = async () => {
   if (!initialized) {
     if (!AppDataSource.isInitialized) {
       await AppDataSource.initialize();
+      // Forzar la creacion de tablas en Supabase
+      await AppDataSource.synchronize();
+      // Crear el usuario admin por defecto
+      await seedAdmin();
     }
     initialized = true;
   }
