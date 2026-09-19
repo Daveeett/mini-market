@@ -170,7 +170,9 @@ export class CreditService {
     await this.accountRepo.save(account);
 
     const tokenResult = await this.statementService.generateTokenByCustomer(customer.id);
-    const statementUrl = `${config.server.frontendBaseUrl}/estado-cuenta/${tokenResult.token}`;
+    // En caso de que haya varias URLs en CORS separadas por coma, usar la primera para el link del correo
+    const mainFrontendUrl = config.server.frontendBaseUrl.split(",")[0].trim();
+    const statementUrl = `${mainFrontendUrl}/estado-cuenta/${tokenResult.token}`;
 
     await this.emailService.sendCreditNotification({
       to: input.email,
