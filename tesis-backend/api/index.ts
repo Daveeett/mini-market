@@ -21,8 +21,12 @@ export default async function handler(req: Request, res: Response) {
     await initializeDb();
     // Le pasamos la peticion de Vercel directamente a la aplicacion de Express
     return app(req, res);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Database connection error in Vercel:", error);
-    res.status(500).json({ error: "Internal Server Error", details: "Database initialization failed" });
+    res.status(500).json({ 
+      error: "Internal Server Error", 
+      details: "Database initialization failed",
+      message: error.message || String(error)
+    });
   }
 }
