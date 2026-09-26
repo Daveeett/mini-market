@@ -5,6 +5,9 @@ export interface PublicStatementCredit {
   createdAt: string;
   dueDate: string;
   amount: string;
+  baseAmount?: number | string;
+  surchargePercent?: number | string;
+  surchargeAmount?: number | string;
   status: string;
   items: PublicStatementItem[];
 }

@@ -12,6 +12,8 @@ import { Payment } from "./payment.entity";
 import { AccountStatement } from "./account-statement.entity";
 import { NotificationLog } from "./notification-log.entity";
 import { Offer } from "./offer.entity";
+import { WalletMovement } from "./wallet-movement.entity";
+import { ProductCrossSell } from "./product-cross-sell.entity";
 
 export const entities = [
   User,
@@ -28,4 +30,6 @@ export const entities = [
   AccountStatement,
   NotificationLog,
   Offer,
+  WalletMovement,
+  ProductCrossSell,
 ];

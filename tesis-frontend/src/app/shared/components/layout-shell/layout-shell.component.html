@@ -18,10 +18,19 @@
       <div class="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-10">
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60">Operaciones</p>
-            <h1 class="text-xl sm:text-2xl font-semibold">Resumen operativo</h1>
+            <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.3em] text-base-content/60 font-manrope">Operaciones</p>
+            <h1 class="text-xl sm:text-2xl font-bold font-jost">Mini Market Urbano</h1>
           </div>
 
+          <!-- Telegram Bot Launcher Button -->
+          <button
+            type="button"
+            (click)="toggleTelegramModal()"
+            class="btn btn-sm bg-sky-600 hover:bg-sky-500 text-white border-none gap-2 font-jost font-bold shadow-md shadow-sky-600/20 hover:scale-105 transition-transform"
+          >
+            <ng-icon name="heroChatBubbleLeftEllipsis" class="text-lg"></ng-icon>
+            <span>Bot Telegram (Asistente 24/7)</span>
+          </button>
         </div>
         <router-outlet></router-outlet>
       </div>
@@ -62,6 +71,24 @@
             Microcreditos
           </a>
         </li>
+        <li>
+          <a routerLink="/wallet" routerLinkActive="active" (click)="drawerToggle.checked = false">
+            <ng-icon name="heroCreditCard" class="text-base"></ng-icon>
+            Billetera Vecinal
+          </a>
+        </li>
+        <li>
+          <a routerLink="/cash" routerLinkActive="active" (click)="drawerToggle.checked = false">
+            <ng-icon name="heroLockClosed" class="text-base"></ng-icon>
+            Control de Caja & Bóveda
+          </a>
+        </li>
+        <li>
+          <a routerLink="/offers" routerLinkActive="active" (click)="drawerToggle.checked = false">
+            <ng-icon name="heroTag" class="text-base"></ng-icon>
+            Publicidad & Anuncios
+          </a>
+        </li>
 
         @if (isAdmin()) {
           <li>
@@ -74,12 +101,6 @@
             <a routerLink="/users" routerLinkActive="active" (click)="drawerToggle.checked = false">
               <ng-icon name="heroUserPlus" class="text-base"></ng-icon>
               Usuarios
-            </a>
-          </li>
-          <li>
-            <a routerLink="/offers" routerLinkActive="active" (click)="drawerToggle.checked = false">
-              <ng-icon name="heroTag" class="text-base"></ng-icon>
-              Ofertas
             </a>
           </li>
         }
@@ -112,4 +133,97 @@
   </div>
 
   <app-toast></app-toast>
+
+  <!-- Telegram Chat Simulator Modal -->
+  @if (showTelegramModal()) {
+    <div class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn font-manrope">
+      <div class="card bg-slate-900 border border-sky-500/30 text-white shadow-2xl w-full max-w-lg overflow-hidden flex flex-col h-[580px]">
+        <!-- Telegram Header -->
+        <header class="bg-gradient-to-r from-sky-700 via-sky-800 to-slate-900 p-4 flex items-center justify-between border-b border-sky-500/20">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-400 flex items-center justify-center text-xl">
+              <ng-icon name="heroChatBubbleLeftEllipsis"></ng-icon>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm font-jost text-white m-0">Mini Market Urbano Bot</h3>
+              <span class="text-[11px] text-sky-300 flex items-center gap-1 font-mono">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                @MiniMarketBot &bull; En línea 24/7
+              </span>
+            </div>
+          </div>
+          <button (click)="toggleTelegramModal()" class="btn btn-ghost btn-xs text-white btn-square">✕</button>
+        </header>
+
+        <!-- Messages Body -->
+        <div class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/60 font-sans">
+          @for (msg of telegramMessages(); track $index) {
+            <div class="flex flex-col" [class.items-end]="msg.sender === 'user'" [class.items-start]="msg.sender === 'bot'">
+              <div
+                class="max-w-[85%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed shadow-sm"
+                [class.bg-sky-600]="msg.sender === 'user'"
+                [class.text-white]="msg.sender === 'user'"
+                [class.bg-slate-800]="msg.sender === 'bot'"
+                [class.border]="msg.sender === 'bot'"
+                [class.border-slate-700]="msg.sender === 'bot'"
+              >
+                {{ msg.text }}
+              </div>
+              <span class="text-[10px] text-slate-400 mt-1 px-1 font-mono">{{ msg.time }}</span>
+            </div>
+          }
+
+          @if (isSendingTelegram()) {
+            <div class="flex items-center gap-2 text-xs text-sky-400 font-mono">
+              <span class="loading loading-dots loading-xs"></span>
+              <span>El Bot está escribiendo...</span>
+            </div>
+          }
+        </div>
+
+        <!-- Preset Command Chips -->
+        <div class="p-2 bg-slate-900/90 border-t border-slate-800 flex items-center gap-1.5 overflow-x-auto text-xs">
+          <span class="text-[10px] uppercase font-bold text-slate-400 px-2 font-jost shrink-0">Comandos:</span>
+          <button type="button" (click)="sendTelegramCommand('/resumen')" class="btn btn-xs bg-sky-900/60 hover:bg-sky-800 text-sky-300 border-sky-700/40 normal-case shrink-0">
+            📊 /resumen
+          </button>
+          <button type="button" (click)="sendTelegramCommand('/morosos')" class="btn btn-xs bg-red-950/60 hover:bg-red-900 text-red-300 border-red-800/40 normal-case shrink-0">
+            🚨 /morosos
+          </button>
+          <button type="button" (click)="sendTelegramCommand('/fiado Carlos 15.00 Aceite')" class="btn btn-xs bg-emerald-950/60 hover:bg-emerald-900 text-emerald-300 border-emerald-800/40 normal-case shrink-0">
+            📝 /fiado 15 Aceite
+          </button>
+          <button type="button" (click)="sendTelegramCommand('/cobrar Carlos 10.00')" class="btn btn-xs bg-teal-950/60 hover:bg-teal-900 text-teal-300 border-teal-800/40 normal-case shrink-0">
+            💵 /cobrar 10.00
+          </button>
+          <button type="button" (click)="sendTelegramCommand('/recargar Maria 20.00')" class="btn btn-xs bg-indigo-950/60 hover:bg-indigo-900 text-indigo-300 border-indigo-800/40 normal-case shrink-0">
+            💳 /recargar 20.00
+          </button>
+          <button type="button" (click)="sendTelegramCommand('/buscar Carlos')" class="btn btn-xs bg-purple-950/60 hover:bg-purple-900 text-purple-300 border-purple-800/40 normal-case shrink-0">
+            🔍 /buscar Carlos
+          </button>
+          <button type="button" (click)="sendTelegramCommand('/gasto 15 Pago bolsas')" class="btn btn-xs bg-amber-950/60 hover:bg-amber-900 text-amber-300 border-amber-800/40 normal-case shrink-0">
+            💸 /gasto 15 Bolsas
+          </button>
+          <button type="button" (click)="sendTelegramCommand('/promos')" class="btn btn-xs bg-rose-950/60 hover:bg-rose-900 text-rose-300 border-rose-800/40 normal-case shrink-0">
+            🏷️ /promos
+          </button>
+        </div>
+
+        <!-- Input Bar -->
+        <form (ngSubmit)="sendTelegramCommand()" class="p-3 bg-slate-900 border-t border-slate-800 flex gap-2">
+          <input
+            type="text"
+            [(ngModel)]="telegramInput"
+            name="telegramInput"
+            placeholder="Escribe un comando (/resumen, /morosos, /gasto)..."
+            class="input input-bordered input-sm flex-1 bg-slate-950 text-white text-xs border-slate-700 focus:border-sky-500"
+          />
+          <button type="submit" [disabled]="!telegramInput.trim() || isSendingTelegram()" class="btn btn-sky btn-sm bg-sky-600 hover:bg-sky-500 text-white border-none font-bold">
+            Enviar
+          </button>
+        </form>
+      </div>
+    </div>
+  }
 </div>

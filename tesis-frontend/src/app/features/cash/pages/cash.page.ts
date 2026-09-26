@@ -95,6 +95,38 @@ export class CashPage implements OnInit {
       .reduce((acc: number, m: CashMovement) => acc + Number(m.amount), 0);
   }
 
+  get isVaultAlert(): boolean {
+    return this.currentCalculatedBalance >= 200.00;
+  }
+
+  get recommendedVaultDrop(): number {
+    return this.isVaultAlert ? Number((this.currentCalculatedBalance - 100.00).toFixed(2)) : 0;
+  }
+
+  get sessionNetProfit(): number {
+    return Number((this.currentCalculatedBalance * 0.25 + 15.00).toFixed(2));
+  }
+
+  executeVaultDrop(): void {
+    const dropAmount = this.recommendedVaultDrop;
+    if (dropAmount <= 0) return;
+
+    this.cashService.addCashMovement({
+      movementType: 'EXPENSE',
+      amount: dropAmount,
+      concept: 'Retiro de Seguridad a Bóveda (Sangrado de Caja)',
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.toast.success(`Retiro de Bóveda por $${dropAmount} registrado exitosamente.`);
+          this.checkSession();
+          this.loadHistory();
+        },
+        error: (e: Error) => this.toast.error(e.message),
+      });
+  }
+
   calculateHistoryIncome(session: CashHistoryEntry | any): number {
     if (session.movements && Array.isArray(session.movements)) {
       return session.movements

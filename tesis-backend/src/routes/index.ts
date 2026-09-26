@@ -13,6 +13,9 @@ import { notificationRoutes } from "./notification.routes";
 import { statementRoutes } from "./statement.routes";
 import { reportRoutes } from "./report.routes";
 import { offerRoutes } from "./offer.routes";
+import walletRoutes from "./wallet.routes";
+import crossSellRoutes from "./cross-sell.routes";
+import telegramRoutes from "./telegram.routes";
 
 export const router = Router();
 
@@ -29,6 +32,9 @@ router.use("/products", productRoutes);
 router.use("/cash", cashRoutes);
 router.use("/sales", saleRoutes);
 router.use("/credits", creditRoutes);
+router.use("/wallet", walletRoutes);
+router.use("/cross-sell", crossSellRoutes);
+router.use("/telegram", telegramRoutes);
 router.use("/dashboard", dashboardRoutes);
 router.use("/notifications", notificationRoutes);
 router.use("/statements", statementRoutes);

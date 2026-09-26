@@ -1,86 +1,302 @@
 <section class="mb-4 sm:mb-6">
-  <h1 class="text-xl sm:text-2xl font-bold">Microcreditos y Cobranza</h1>
-  <p class="text-xs sm:text-sm text-base-content/70">Otorgamiento de creditos. Clientes en mora bloqueados automaticamente.</p>
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-xl sm:text-2xl font-bold font-jost">Microcréditos & Financiamiento</h1>
+      <p class="text-xs sm:text-sm text-base-content/70 font-manrope">Gestión de cartera, cobranza inteligente y rentabilidad por diferencial de crédito.</p>
+    </div>
+
+    <!-- Profitability KPI badge (Visible when customer selected) -->
+    @if (selectedCustomerId && credits().length > 0) {
+      <div class="bg-gradient-to-r from-emerald-500/10 via-emerald-500/15 to-teal-500/10 border border-emerald-500/30 rounded-2xl px-4 py-2.5 flex items-center gap-3 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+          <ng-icon name="heroArrowTrendingUp"></ng-icon>
+        </div>
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-300 block font-jost">Ganancia Extra por Crédito</span>
+          <span class="text-lg font-black font-mono text-emerald-400">+${{ totalExtraProfit.toFixed(2) }}</span>
+        </div>
+      </div>
+    }
+  </div>
 </section>
 
-<div class="grid grid-cols-1 xl:grid-cols-[360px_1fr] gap-6 items-start">
+<div class="grid grid-cols-1 xl:grid-cols-[520px_1fr] gap-6 items-start font-manrope">
   <div class="flex flex-col gap-4">
-    <div class="card bg-base-100 shadow-sm">
-      <div class="card-body gap-4">
+    <!-- Customer Selector Card -->
+    <div class="card bg-base-100 shadow-sm border border-base-300">
+      <div class="card-body gap-4 p-5">
         <label for="credit-customer-select" class="form-control">
-          <div class="label">
-            <span class="label-text text-xs font-bold uppercase tracking-widest">Seleccionar Cliente Operativo</span>
+          <div class="label pt-0">
+            <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Seleccionar Cliente Operativo</span>
           </div>
           <div class="relative">
             <ng-icon name="heroUser" class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50"></ng-icon>
             <select id="credit-customer-select" [(ngModel)]="selectedCustomerId" (change)="loadCredits()" class="select select-bordered w-full pl-10">
-              <option [ngValue]="''">-- Seleccionar --</option>
+              <option [ngValue]="''">-- Seleccionar Cliente --</option>
               @for (c of customers(); track c.id) {
-                <option [ngValue]="c.id">{{ c.fullName }}</option>
+                <option [ngValue]="c.id">{{ c.fullName }} (Límite: ${{ c.maxCredit }})</option>
               }
             </select>
           </div>
         </label>
 
         @if (semaphore()) {
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-widest text-base-content/60">Estado</span>
+          <div class="flex items-center justify-between pt-2 border-t border-base-200">
+            <span class="text-xs font-bold uppercase tracking-widest text-base-content/60 font-jost">Estado Crediticio</span>
             <app-semaphore-badge [status]="semaphore()!"></app-semaphore-badge>
           </div>
         }
       </div>
     </div>
 
+    <!-- Link to Dedicated Wallet Page -->
+    @if (selectedCustomerId) {
+      <div class="card bg-gradient-to-r from-emerald-950/60 to-slate-900 border border-emerald-500/20 p-4 rounded-2xl flex items-center justify-between text-white">
+        <div class="flex items-center gap-3">
+          <ng-icon name="heroCreditCard" class="text-2xl text-emerald-400"></ng-icon>
+          <div>
+            <p class="text-xs font-bold font-jost text-emerald-300 m-0">Wallet Prepago: ${{ walletBalance() }}</p>
+            <p class="text-[11px] text-slate-300 m-0">Saldo acumulado sin deuda</p>
+          </div>
+        </div>
+        <a routerLink="/wallet" class="btn btn-xs bg-emerald-600 hover:bg-emerald-500 text-white border-none font-bold flex items-center gap-1">
+          Ir a Billetera <ng-icon name="heroArrowRight" class="text-xs"></ng-icon>
+        </a>
+      </div>
+    }
+
     @if (semaphore() === 'RED') {
-      <div class="alert alert-error">
-        <ng-icon name="heroNoSymbol" class="text-xl"></ng-icon>
+      <div class="alert alert-error shadow-sm rounded-2xl">
+        <ng-icon name="heroNoSymbol" class="text-2xl shrink-0"></ng-icon>
         <div>
-          <h4 class="font-bold">Operacion bloqueada</h4>
-          <p class="text-sm">El cliente mantiene mora activa.</p>
+          <h4 class="font-bold font-jost">Operación Bloqueada</h4>
+          <p class="text-xs">El cliente mantiene mora activa en su cuenta. Regularice el pago antes de otorgar un nuevo crédito.</p>
         </div>
       </div>
     }
 
+    <!-- New Credit Form with Differential Surcharge Calculator -->
     @if (selectedCustomerId && semaphore() !== 'RED') {
-      <div class="card bg-base-100 border border-base-300 shadow-sm">
-        <div class="card-body gap-4">
-          <h2 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2">
-            <ng-icon name="heroCurrencyDollar" class="text-lg"></ng-icon>
-            Nuevo Credito
-          </h2>
+      <div class="card bg-base-100 border border-base-300 shadow-md">
+        <div class="card-body gap-4 p-5">
+          <div class="flex items-center justify-between border-b border-base-200 pb-3">
+            <h2 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2 font-jost">
+              <ng-icon name="heroCurrencyDollar" class="text-lg text-primary"></ng-icon>
+              Otorgar Crédito a Plazo
+            </h2>
+          </div>
 
+          <!-- Base Cash Amount -->
           <label for="credit-amount" class="form-control">
-            <div class="label">
-              <span class="label-text text-xs font-bold uppercase tracking-widest">Monto</span>
+            <div class="label py-1">
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Monto Base (Precio Contado)</span>
             </div>
-            <input id="credit-amount" type="number" [(ngModel)]="newCreditAmount" class="input input-bordered w-full" placeholder="0.00" />
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base-content/50 font-bold">$</span>
+              <input
+                id="credit-amount"
+                type="number"
+                step="0.01"
+                [(ngModel)]="newCreditAmount"
+                class="input input-bordered w-full pl-8 font-mono font-bold text-base"
+                placeholder="0.00"
+              />
+            </div>
           </label>
 
+          <!-- Surcharge Percentage Selector (Presets + Custom) -->
+          <div class="form-control">
+            <div class="label py-1 flex justify-between">
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Recargo por Financiamiento</span>
+              <span class="text-xs font-bold text-primary font-mono">+{{ surchargePercent() }}%</span>
+            </div>
+            
+            <div class="grid grid-cols-5 gap-1.5">
+              @for (preset of presetSurcharges; track preset) {
+                <button
+                  type="button"
+                  (click)="setSurcharge(preset)"
+                  class="btn btn-xs rounded-lg font-bold"
+                  [class.btn-primary]="surchargePercent() === preset"
+                  [class.btn-outline]="surchargePercent() !== preset"
+                >
+                  {{ preset === 0 ? '0%' : '+' + preset + '%' }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Live Profitability Breakdown Card -->
+          @if (baseAmount > 0) {
+            <div class="bg-base-200/80 rounded-2xl p-3.5 border border-base-300 flex flex-col gap-2 text-xs">
+              <div class="flex justify-between text-base-content/70">
+                <span>Precio Contado Base:</span>
+                <span class="font-mono font-semibold">${{ baseAmount.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between text-emerald-400 font-medium">
+                <span>Recargo Financiamiento (+{{ surchargePercent() }}%):</span>
+                <span class="font-mono font-bold">+${{ surchargeAmount.toFixed(2) }}</span>
+              </div>
+              <div class="divider my-0"></div>
+              <div class="flex justify-between items-center text-sm font-bold">
+                <span class="text-base-content">Total a Cobrar al Cliente:</span>
+                <span class="font-mono text-primary text-base">${{ totalCreditAmount.toFixed(2) }}</span>
+              </div>
+
+              @if (surchargeAmount > 0) {
+                <div class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl px-2.5 py-1.5 mt-1 flex items-center justify-between text-[11px] font-bold">
+                  <span class="flex items-center gap-1">
+                    <ng-icon name="heroSparkles" class="text-sm"></ng-icon>
+                    Tu Ganancia Extra Directa:
+                  </span>
+                  <span class="font-mono text-xs">+${{ surchargeAmount.toFixed(2) }}</span>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Asistente Inteligente de Venta Cruzada (Amplio y Sugerencias Extendidas) -->
+          <div class="bg-gradient-to-r from-amber-950/50 via-slate-900 to-orange-950/40 border border-amber-500/30 rounded-none p-4 flex flex-col gap-3 font-manrope shadow-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5 font-jost">
+                  <ng-icon name="heroSparkles" class="text-sm text-amber-400"></ng-icon>
+                  Venta Cruzada Inteligente
+                </span>
+                <p class="text-[11px] text-slate-300 font-mono m-0 mt-0.5">Filtra por categoría o busca cualquier producto para ver sugerencias:</p>
+              </div>
+              <span class="badge badge-amber text-[10px] font-mono bg-amber-500/20 text-amber-300 border-amber-500/40 shrink-0">
+                +15% Ticket Avg
+              </span>
+            </div>
+
+            <!-- Search Filter Bar -->
+            <div class="relative w-full">
+              <input
+                type="text"
+                [ngModel]="searchCrossSellQuery()"
+                (ngModelChange)="searchCrossSellQuery.set($event)"
+                placeholder="Buscar sugerencia (ej: hielo, queso, aceite, café)..."
+                class="input input-xs input-bordered w-full bg-slate-950 text-white border-slate-700 text-xs pl-3 focus:border-amber-500"
+              />
+            </div>
+
+            <!-- Category Selector Pills (Scroll Horizontal) -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1.5 text-xs">
+              @for (cat of crossSellCategories; track cat.id) {
+                <button
+                  type="button"
+                  (click)="setCrossSellCategory(cat.id)"
+                  class="btn btn-xs rounded-none font-bold normal-case shrink-0 flex items-center gap-1"
+                  [class.bg-amber-500]="activeCategory() === cat.id && !searchCrossSellQuery()"
+                  [class.text-slate-950]="activeCategory() === cat.id && !searchCrossSellQuery()"
+                  [class.btn-outline]="activeCategory() !== cat.id || searchCrossSellQuery()"
+                  [class.border-amber-500/40]="activeCategory() !== cat.id || searchCrossSellQuery()"
+                  [class.text-amber-200]="activeCategory() !== cat.id || searchCrossSellQuery()"
+                >
+                  <ng-icon [name]="cat.icon" class="text-xs"></ng-icon>
+                  {{ cat.name }}
+                </button>
+              }
+            </div>
+
+            <!-- Scrollable Recommendations Grid (Espacio Amplio) -->
+            <div class="max-h-64 overflow-y-auto space-y-2 pr-1">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                @for (rec of displayedCrossSellItems(); track rec.id) {
+                  <div class="bg-white/5 border border-white/10 rounded-none p-3 flex items-center justify-between gap-3 hover:border-amber-500/50 hover:bg-white/10 transition-all">
+                    <div class="min-w-0 flex-1">
+                      <span class="text-xs font-bold text-white block truncate">{{ rec.name }}</span>
+                      <span class="text-[10px] text-amber-200/70 block font-mono truncate mt-0.5">{{ rec.reason }}</span>
+                    </div>
+                    <button
+                      type="button"
+                      (click)="addCrossSellItem(rec)"
+                      class="btn btn-xs bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-500/40 font-bold font-mono shrink-0 flex items-center gap-1 shadow-sm"
+                    >
+                      +${{ rec.price.toFixed(2) }}
+                      <ng-icon name="heroPlus" class="text-xs"></ng-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+
+              @if (displayedCrossSellItems().length === 0) {
+                <p class="text-xs text-slate-400 text-center py-4 font-mono">No se encontraron productos sugeridos para "{{ searchCrossSellQuery() }}".</p>
+              }
+            </div>
+
+            <!-- Added Items Chip Summary -->
+            @if (addedCrossSellItems().length > 0) {
+              <div class="pt-2 border-t border-amber-500/20">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-[10px] font-bold uppercase text-amber-300 tracking-wider font-jost">Agregados a esta cuenta:</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  @for (added of addedCrossSellItems(); track added.item.id) {
+                    <span class="badge badge-sm bg-amber-500/20 text-amber-200 border-amber-500/40 font-mono text-[10px] gap-1 py-2 rounded-none">
+                      {{ added.count > 1 ? added.count + 'x ' : '' }}{{ added.item.name }} (+${{ (added.item.price * added.count).toFixed(2) }})
+                      <button type="button" (click)="removeCrossSellItem(added.item.id)" class="hover:text-red-400 font-bold ml-1">
+                        <ng-icon name="heroXMark" class="text-xs"></ng-icon>
+                      </button>
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
           <label for="credit-dueDate" class="form-control">
-            <div class="label">
-              <span class="label-text text-xs font-bold uppercase tracking-widest">Vencimiento</span>
+            <div class="label py-1">
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Fecha de Vencimiento</span>
             </div>
-            <input id="credit-dueDate" type="date" [min]="minDueDate" [(ngModel)]="newCreditDueDate" class="input input-bordered w-full" />
+            <input
+              id="credit-dueDate"
+              type="date"
+              [min]="minDueDate"
+              [(ngModel)]="newCreditDueDate"
+              class="input input-bordered w-full font-medium"
+            />
           </label>
 
+          <!-- Email Notification -->
           <label for="credit-email" class="form-control">
-            <div class="label">
-              <span class="label-text text-xs font-bold uppercase tracking-widest">Notificacion Email</span>
+            <div class="label py-1">
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Correo para Comprobante Digital</span>
             </div>
-            <input id="credit-email" type="email" [(ngModel)]="newCreditEmail" class="input input-bordered w-full" placeholder="opcional@correo.com" />
+            <div class="relative">
+              <ng-icon name="heroInbox" class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50"></ng-icon>
+              <input
+                id="credit-email"
+                type="email"
+                [(ngModel)]="newCreditEmail"
+                class="input input-bordered w-full pl-10"
+                placeholder="cliente@correo.com"
+              />
+            </div>
           </label>
 
-          <button (click)="submitCredit()" [disabled]="isCreating()" class="btn btn-primary w-full">
-            <ng-icon name="heroCheckCircle"></ng-icon>
-            {{ isCreating() ? 'Procesando...' : 'Aprobar Credito' }}
+          <button (click)="submitCredit()" [disabled]="isCreating() || !newCreditAmount || !newCreditDueDate" class="btn btn-primary w-full mt-2 font-bold font-jost shadow-md shadow-primary/20">
+            @if (isCreating()) {
+              <span class="loading loading-spinner loading-xs"></span>
+              <span>Procesando...</span>
+            } @else {
+              <ng-icon name="heroCheckCircle" class="text-lg"></ng-icon>
+              <span>Aprobar Crédito (${{ totalCreditAmount.toFixed(2) }})</span>
+            }
           </button>
 
           @if (createMessage()) {
-            <div class="text-xs font-semibold">
+            <div class="text-xs font-semibold mt-1">
               @if (createMessage().includes('exitosamente')) {
-                <span class="text-success">{{ createMessage() }}</span>
+                <span class="text-success flex items-center gap-1">
+                  <ng-icon name="heroCheckCircle"></ng-icon>
+                  {{ createMessage() }}
+                </span>
               } @else {
-                <span class="text-error">{{ createMessage() }}</span>
+                <span class="text-error flex items-center gap-1">
+                  <ng-icon name="heroExclamationCircle"></ng-icon>
+                  {{ createMessage() }}
+                </span>
               }
             </div>
           }
@@ -89,60 +305,80 @@
     }
   </div>
 
+  <!-- Right Section: Credit Portfolio & WhatsApp Reminders -->
   <div class="flex flex-col gap-4">
     @if (waLink()) {
       <div class="card bg-base-100 border border-base-300 shadow-sm">
-        <div class="card-body flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="card-body flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5">
           <div>
-            <h3 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2">
+            <h3 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2 font-jost text-success">
               <ng-icon name="heroChatBubbleLeftEllipsis" class="text-lg"></ng-icon>
-              Enlace Generado
+              Recordatorio WhatsApp Listo
             </h3>
-            <p class="text-xs text-base-content/60 truncate max-w-sm">{{ waMessage() }}</p>
+            <p class="text-xs text-base-content/70 truncate max-w-md mt-1">{{ waMessage() }}</p>
           </div>
-          <a [href]="waLink()" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Abrir WhatsApp</a>
+          <a [href]="waLink()" target="_blank" rel="noopener" class="btn btn-success btn-sm font-bold gap-1 shadow-sm">
+            <ng-icon name="heroChatBubbleLeftEllipsis"></ng-icon>
+            Enviar WhatsApp
+          </a>
         </div>
       </div>
     }
 
     @if (credits().length > 0) {
-      <div class="card bg-base-100 shadow-sm">
+      <div class="card bg-base-100 shadow-sm border border-base-300 overflow-hidden">
         <div class="card-body p-0">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5 border-b border-base-200">
-            <h2 class="text-sm font-bold uppercase tracking-widest">Historial Activo</h2>
-            <button (click)="sendGeneralReminder()" class="btn btn-outline btn-sm">
+            <div>
+              <h2 class="text-sm font-bold uppercase tracking-widest font-jost">Historial de Créditos del Cliente</h2>
+              <p class="text-xs text-base-content/60 mt-0.5">Detalle de montos base, recargo aplicado y pagos.</p>
+            </div>
+            <button (click)="sendGeneralReminder()" class="btn btn-outline btn-sm font-medium gap-1.5">
               <ng-icon name="heroBellAlert"></ng-icon>
-              Notificar Saldo
+              Notificar Deuda por WhatsApp
             </button>
           </div>
 
           <div class="divide-y divide-base-200">
             @for (credit of credits(); track credit.id) {
-              <article class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5">
+              <article class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 hover:bg-base-200/40 transition-colors">
                 <div class="flex flex-col gap-1.5">
                   <div class="flex items-center gap-2">
-                    <span class="badge badge-outline badge-sm">ID: {{ credit.id.slice(0, 8) }}</span>
-                    <span class="badge badge-sm" [ngClass]="credit.status === 'PAID' ? 'badge-success' : (credit.status === 'OVERDUE' ? 'badge-error' : 'badge-info')">
-                      {{ credit.status }}
+                    <span class="badge badge-outline badge-sm font-mono">#{{ credit.id.slice(0, 8) }}</span>
+                    <span class="badge badge-sm font-bold font-jost" [ngClass]="credit.status === 'PAID' ? 'badge-success' : (credit.status === 'OVERDUE' ? 'badge-error' : 'badge-info')">
+                      {{ credit.status === 'PAID' ? 'PAGADO' : (credit.status === 'OVERDUE' ? 'EN MORA' : 'ABIERTO') }}
+                    </span>
+                    @if (credit.surchargeAmount && +credit.surchargeAmount > 0) {
+                      <span class="badge badge-xs bg-emerald-500/15 text-emerald-400 border-emerald-500/30 font-mono">
+                        +{{ credit.surchargePercent || '5' }}% Recargo (+${{ credit.surchargeAmount }})
+                      </span>
+                    }
+                  </div>
+                  
+                  <div class="flex items-center gap-4 text-xs text-base-content/70 mt-1">
+                    @if (credit.baseAmount) {
+                      <span>Base Contado: <strong class="text-base-content font-mono">${{ credit.baseAmount }}</strong></span>
+                    }
+                    <span class="flex items-center gap-1">
+                      <ng-icon name="heroCalendarDays" class="text-base-content/50"></ng-icon>
+                      Vencimiento: <strong class="text-base-content font-mono">{{ credit.dueDate | date: 'dd/MM/yyyy' }}</strong>
                     </span>
                   </div>
-                  <span class="text-xs text-base-content/70 flex items-center gap-1">
-                    <ng-icon name="heroCalendarDays" class="text-base-content/50"></ng-icon>
-                    Vence: <strong class="text-base-content">{{ credit.dueDate | date: 'dd/MM/yyyy' }}</strong>
-                  </span>
                 </div>
-                <div class="flex items-center gap-3 text-left sm:text-right">
+
+                <div class="flex items-center gap-3.5 text-left sm:text-right">
                   <div>
-                    <span class="block text-lg sm:text-xl font-mono font-bold text-primary">${{ credit.amount }}</span>
+                    <span class="text-[11px] text-base-content/60 uppercase font-bold block font-jost">Total a Cobrar</span>
+                    <span class="block text-lg sm:text-xl font-mono font-black text-primary">${{ credit.amount }}</span>
                   </div>
                   @if (credit.status !== 'PAID') {
                     <button
                       type="button"
                       (click)="openPaymentModal(credit)"
-                      class="btn btn-success btn-xs font-bold gap-1 shadow-sm hover:scale-105 transition-transform"
+                      class="btn btn-success btn-sm font-bold gap-1 shadow-sm hover:scale-105 transition-transform"
                     >
-                      <ng-icon name="heroBanknotes" class="text-sm"></ng-icon>
-                      Pagar en Efectivo
+                      <ng-icon name="heroBanknotes" class="text-base"></ng-icon>
+                      Pagar
                     </button>
                   }
                 </div>
@@ -152,27 +388,27 @@
         </div>
       </div>
 
-      <!-- Modal para Registrar Pago de Deuda -->
+      <!-- Payment Modal -->
       @if (selectedCreditForPayment(); as credit) {
         <div class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
           <div class="card bg-base-100 border border-base-300 shadow-2xl w-full max-w-md">
             <div class="card-body p-6">
               <div class="flex items-center justify-between border-b border-base-200 pb-3 mb-2">
-                <h3 class="text-base font-bold flex items-center gap-2">
+                <h3 class="text-base font-bold flex items-center gap-2 font-jost">
                   <ng-icon name="heroBanknotes" class="text-success text-xl"></ng-icon>
-                  Cancelar / Registrar Pago
+                  Liquidar Crédito
                 </h3>
-                <button (click)="closePaymentModal()" class="btn btn-ghost btn-xs btn-square">✕</button>
+                <button (click)="closePaymentModal()" class="btn btn-ghost btn-xs btn-square"><ng-icon name="heroXMark"></ng-icon></button>
               </div>
 
               <p class="text-xs text-base-content/70">
-                Cliente pagó en efectivo. Confirma el monto recibido para liquidar la deuda del crédito ID: <strong class="font-mono text-primary">{{ credit.id.slice(0, 8) }}</strong>.
+                Confirmar recepción de pago para cancelar el crédito ID: <strong class="font-mono text-primary">{{ credit.id.slice(0, 8) }}</strong>.
               </p>
 
               <div class="flex flex-col gap-4 mt-4">
                 <label for="modal-payment-amount" class="form-control">
                   <div class="label py-1">
-                    <span class="label-text text-xs font-bold uppercase tracking-widest">Monto Recibido ($)</span>
+                    <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Monto Recibido ($)</span>
                   </div>
                   <input
                     id="modal-payment-amount"
@@ -185,7 +421,7 @@
 
                 <label for="modal-payment-method" class="form-control">
                   <div class="label py-1">
-                    <span class="label-text text-xs font-bold uppercase tracking-widest">Método de Pago</span>
+                    <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Método de Pago</span>
                   </div>
                   <select id="modal-payment-method" [(ngModel)]="paymentMethod" class="select select-bordered w-full font-bold">
                     <option value="CASH">Efectivo en Tienda (Caja)</option>
@@ -194,15 +430,15 @@
                 </label>
 
                 <div class="flex gap-2 mt-2">
-                  <button (click)="confirmPayment()" [disabled]="isProcessingPayment()" class="btn btn-success flex-1 font-bold">
+                  <button (click)="confirmPayment()" [disabled]="isProcessingPayment()" class="btn btn-success flex-1 font-bold font-jost">
                     @if (isProcessingPayment()) {
                       <span class="loading loading-spinner loading-xs"></span>
                     } @else {
                       <ng-icon name="heroCheckCircle"></ng-icon>
                     }
-                    Confirmar Pago y Cancelar
+                    Registrar Pago
                   </button>
-                  <button (click)="closePaymentModal()" class="btn btn-ghost">Cancelar</button>
+                  <button (click)="closePaymentModal()" class="btn btn-ghost font-jost">Cancelar</button>
                 </div>
               </div>
             </div>
@@ -213,13 +449,111 @@
 
     @if (selectedCustomerId && credits().length === 0) {
       <div class="card bg-base-100 border border-base-300 shadow-sm text-center">
-        <div class="card-body">
-          <div class="w-12 h-12 rounded-full bg-base-200 text-base-content/50 grid place-items-center text-xl mx-auto mb-2">
+        <div class="card-body p-8">
+          <div class="w-12 h-12 rounded-2xl bg-base-200 text-base-content/50 grid place-items-center text-xl mx-auto mb-2">
             <ng-icon name="heroInbox"></ng-icon>
           </div>
-          <p class="text-sm text-base-content/70">El cliente no tiene creditos activos.</p>
+          <h4 class="font-bold text-sm font-jost">Sin Créditos Activos</h4>
+          <p class="text-xs text-base-content/70">Este cliente no registra deudas en este momento.</p>
         </div>
       </div>
     }
   </div>
 </div>
+
+<!-- Wallet Recharge Modal -->
+@if (showRechargeModal()) {
+  <div class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn font-manrope">
+    <div class="card bg-base-100 border border-base-300 shadow-2xl w-full max-w-md">
+      <div class="card-body p-6">
+        <div class="flex items-center justify-between border-b border-base-200 pb-3 mb-2">
+          <h3 class="text-base font-bold flex items-center gap-2 font-jost text-indigo-400">
+            <ng-icon name="heroBanknotes" class="text-xl"></ng-icon>
+            Recargar Wallet Prepago
+          </h3>
+          <button (click)="closeRechargeModal()" class="btn btn-ghost btn-xs btn-square"><ng-icon name="heroXMark"></ng-icon></button>
+        </div>
+
+        <p class="text-xs text-base-content/70">
+          Ingresa el monto a recargar. El cliente recibirá un saldo bonificado para sus compras diarias.
+        </p>
+
+        <div class="flex flex-col gap-4 mt-3">
+          <label for="modal-recharge-amount" class="form-control">
+            <div class="label py-1">
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Monto a Recargar ($)</span>
+            </div>
+            <input
+              id="modal-recharge-amount"
+              type="number"
+              step="0.01"
+              [(ngModel)]="rechargeAmount"
+              class="input input-bordered input-lg font-mono font-bold text-indigo-400 text-center text-2xl w-full"
+              placeholder="0.00"
+            />
+          </label>
+
+          <div class="form-control">
+            <div class="label py-1 flex justify-between">
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Bono de Recarga</span>
+              <span class="text-xs font-bold text-indigo-400 font-mono">+{{ rechargeBonusPercent() }}%</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5">
+              @for (b of [0, 3, 5, 8]; track b) {
+                <button
+                  type="button"
+                  (click)="rechargeBonusPercent.set(b)"
+                  class="btn btn-xs font-bold"
+                  [class.btn-primary]="rechargeBonusPercent() === b"
+                  [class.btn-outline]="rechargeBonusPercent() !== b"
+                >
+                  {{ b === 0 ? 'Sin Bono' : '+' + b + '%' }}
+                </button>
+              }
+            </div>
+          </div>
+
+          @if (rechargeAmount && rechargeAmount > 0) {
+            <div class="bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 rounded-xl p-3 text-xs flex flex-col gap-1">
+              <div class="flex justify-between">
+                <span>Efectivo Recibido:</span>
+                <strong class="font-mono">${{ rechargeAmount.toFixed(2) }}</strong>
+              </div>
+              <div class="flex justify-between text-emerald-400">
+                <span>Bono Extra (+{{ rechargeBonusPercent() }}%):</span>
+                <strong class="font-mono">+${{ ((rechargeAmount * rechargeBonusPercent()) / 100).toFixed(2) }}</strong>
+              </div>
+              <div class="divider my-0.5"></div>
+              <div class="flex justify-between text-sm font-bold text-white">
+                <span>Saldo Total a Acreditar:</span>
+                <strong class="font-mono text-emerald-400 text-base">${{ (rechargeAmount + (rechargeAmount * rechargeBonusPercent()) / 100).toFixed(2) }}</strong>
+              </div>
+            </div>
+          }
+
+          <label for="modal-recharge-method" class="form-control">
+            <div class="label py-1">
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Método de Pago Recibido</span>
+            </div>
+            <select id="modal-recharge-method" [(ngModel)]="rechargeMethod" class="select select-bordered w-full font-bold">
+              <option value="CASH">Efectivo en Tienda (Caja)</option>
+              <option value="TRANSFER">Transferencia Bancaria Directa</option>
+            </select>
+          </label>
+
+          <div class="flex gap-2 mt-2">
+            <button (click)="submitWalletRecharge()" [disabled]="isRechargingWallet() || !rechargeAmount" class="btn btn-primary flex-1 font-bold font-jost shadow-md shadow-primary/20">
+              @if (isRechargingWallet()) {
+                <span class="loading loading-spinner loading-xs"></span>
+              } @else {
+                <ng-icon name="heroCheckCircle"></ng-icon>
+              }
+              Acreditar Saldo Wallet
+            </button>
+            <button (click)="closeRechargeModal()" class="btn btn-ghost font-jost">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

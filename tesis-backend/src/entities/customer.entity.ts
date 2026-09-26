@@ -29,6 +29,9 @@ export class Customer extends BaseEntity {
   @Column({ name: "max_credit", default: 10 })
   maxCredit!: number;
 
+  @Column({ name: "wallet_balance", type: "decimal", precision: 12, scale: 2, default: 0 })
+  walletBalance!: string;
+
   @Column({ name: "is_active", default: true })
   isActive!: boolean;
 

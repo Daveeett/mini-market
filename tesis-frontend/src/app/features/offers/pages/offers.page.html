@@ -1,242 +1,450 @@
-<section class="mb-6">
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<section class="mb-6 font-manrope">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 p-6 rounded-3xl border border-slate-800 shadow-xl">
     <div>
-      <h1 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
-        <ng-icon name="heroTag" class="text-primary text-2xl"></ng-icon>
-        Gestión de Ofertas y Promociones
+      <h1 class="text-xl sm:text-2xl font-bold font-jost text-white flex items-center gap-2 m-0">
+        Gestión de Ofertas & Publicidad Externa
       </h1>
-      <p class="text-xs sm:text-sm text-base-content/70">
-        Crea promociones exclusivas que se mostrarán en el Estado de Cuenta Digital de tus clientes.
+      <p class="text-xs sm:text-sm text-slate-300 m-0 mt-1">
+        Administra las ofertas internas de tu tienda y monetiza alquilando espacio publicitario a otros negocios vecinos.
       </p>
     </div>
+
+    <!-- Revenue KPI Badge for Sponsor Ads -->
+    @if (activeTab() === 'SPONSOR_ADS') {
+      <div class="bg-gradient-to-r from-amber-500/20 to-amber-600/10 border border-amber-400/40 rounded-2xl px-4 py-2.5 flex items-center gap-3 shadow-lg">
+        <div class="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 font-black flex items-center justify-center text-xl shadow-md">
+          <ng-icon name="heroBanknotes" class="text-xl"></ng-icon>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-300 block font-jost">Ingreso Extra por Publicidad</span>
+          <span class="text-xl font-extrabold font-mono text-amber-400">+${{ totalMonthlyAdRevenue() }}.00 / mes</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Navigation Tabs (Separación Clara) -->
+  <div class="flex border-b border-base-300 mt-6 gap-2">
+    <button
+      type="button"
+      (click)="setTab('STORE_OFFERS')"
+      class="px-6 py-3 font-jost font-bold text-sm border-b-2 transition-colors flex items-center gap-2"
+      [class.border-primary]="activeTab() === 'STORE_OFFERS'"
+      [class.text-primary]="activeTab() === 'STORE_OFFERS'"
+      [class.border-transparent]="activeTab() !== 'STORE_OFFERS'"
+      [class.text-base-content/60]="activeTab() !== 'STORE_OFFERS'"
+    >
+      <span class="flex items-center gap-2"><ng-icon name="heroShoppingBag" class="text-base"></ng-icon> Ofertas de la Tienda</span>
+      <span class="badge badge-sm badge-primary">{{ offers().length }}</span>
+    </button>
+
+    <button
+      type="button"
+      (click)="setTab('SPONSOR_ADS')"
+      class="px-6 py-3 font-jost font-bold text-sm border-b-2 transition-colors flex items-center gap-2"
+      [class.border-amber-500]="activeTab() === 'SPONSOR_ADS'"
+      [class.text-amber-500]="activeTab() === 'SPONSOR_ADS'"
+      [class.border-transparent]="activeTab() !== 'SPONSOR_ADS'"
+      [class.text-base-content/60]="activeTab() !== 'SPONSOR_ADS'"
+    >
+      <span class="flex items-center gap-2"><ng-icon name="heroMegaphone" class="text-base"></ng-icon> Publicidad de Negocios Aliados</span>
+      <span class="badge badge-sm badge-warning">{{ sponsorAds().length }}</span>
+    </button>
   </div>
 </section>
 
-<div class="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 items-start">
-  <!-- Form Panel -->
-  <div class="card bg-base-100 border border-base-300 shadow-sm sticky top-4">
-    <div class="card-body p-5 sm:p-6">
-      <h2 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2 mb-4">
-        <ng-icon [name]="editingId ? 'heroPencilSquare' : 'heroPlusCircle'" class="text-lg text-primary"></ng-icon>
-        {{ editingId ? 'Editar Oferta' : 'Nueva Oferta Promocional' }}
-      </h2>
+<!-- ========================================== -->
+<!-- TAB 1: OFERTAS PROPIAS DE LA TIENDA        -->
+<!-- ========================================== -->
+@if (activeTab() === 'STORE_OFFERS') {
+  <div class="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 items-start animate-fadeIn font-manrope">
+    <!-- Form Panel: Store Offers -->
+    <div class="card bg-base-100 border border-base-300 shadow-md">
+      <div class="card-body p-5 sm:p-6">
+        <h2 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2 mb-4 font-jost">
+          <ng-icon [name]="editingId ? 'heroPencilSquare' : 'heroPlusCircle'" class="text-lg text-primary"></ng-icon>
+          {{ editingId ? 'Editar Oferta de Tienda' : 'Nueva Oferta Promocional de la Tienda' }}
+        </h2>
 
-      <div class="flex flex-col gap-4">
-        <label for="offer-title" class="form-control">
-          <div class="label py-1">
-            <span class="label-text text-xs font-bold uppercase tracking-widest">Título de la Oferta *</span>
-          </div>
-          <input
-            id="offer-title"
-            type="text"
-            [(ngModel)]="title"
-            placeholder="Ej. Combo Desayuno Saludable 2x1"
-            class="input input-bordered input-sm w-full"
-          />
-        </label>
-
-        <label for="offer-badge" class="form-control">
-          <div class="label py-1">
-            <span class="label-text text-xs font-bold uppercase tracking-widest">Etiqueta / Badge (ej. 20% OFF, 2x1)</span>
-          </div>
-          <input
-            id="offer-badge"
-            type="text"
-            [(ngModel)]="badgeTag"
-            placeholder="Ej. ¡25% OFF! o ¡2x1!"
-            class="input input-bordered input-sm w-full font-bold text-primary"
-          />
-        </label>
-
-        <div class="grid grid-cols-2 gap-3">
-          <label for="offer-orig-price" class="form-control">
+        <div class="flex flex-col gap-4">
+          <label for="offer-title" class="form-control">
             <div class="label py-1">
-              <span class="label-text text-xs font-bold uppercase tracking-widest">Precio Normal ($)</span>
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Nombre de la Promoción / Combo *</span>
             </div>
             <input
-              id="offer-orig-price"
+              id="offer-title"
               type="text"
-              [(ngModel)]="originalPrice"
-              placeholder="12.50"
-              class="input input-bordered input-sm w-full font-mono"
+              [(ngModel)]="title"
+              placeholder="Ej. Combo Desayuno Saludable 2x1"
+              class="input input-bordered input-sm w-full font-medium"
             />
           </label>
 
-          <label for="offer-price" class="form-control">
+          <label for="offer-badge" class="form-control">
             <div class="label py-1">
-              <span class="label-text text-xs font-bold uppercase tracking-widest">Precio Oferta ($)</span>
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Etiqueta Destacada (ej. ¡25% OFF!)</span>
             </div>
             <input
-              id="offer-price"
+              id="offer-badge"
               type="text"
-              [(ngModel)]="offerPrice"
-              placeholder="9.99"
-              class="input input-bordered input-sm w-full font-mono font-bold text-success"
+              [(ngModel)]="badgeTag"
+              placeholder="Ej. ¡25% OFF! o ¡2x1!"
+              class="input input-bordered input-sm w-full font-bold text-primary"
             />
           </label>
-        </div>
 
-        <label for="offer-desc" class="form-control">
-          <div class="label py-1">
-            <span class="label-text text-xs font-bold uppercase tracking-widest">Descripción Atractiva *</span>
-          </div>
-          <textarea
-            id="offer-desc"
-            [(ngModel)]="description"
-            rows="3"
-            placeholder="Describe qué incluye la oferta y por qué le conviene al cliente..."
-            class="textarea textarea-bordered textarea-sm w-full"
-          ></textarea>
-        </label>
+          <div class="grid grid-cols-2 gap-3">
+            <label for="offer-orig-price" class="form-control">
+              <div class="label py-1">
+                <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Precio Normal ($)</span>
+              </div>
+              <input
+                id="offer-orig-price"
+                type="text"
+                [(ngModel)]="originalPrice"
+                placeholder="12.50"
+                class="input input-bordered input-sm w-full font-mono"
+              />
+            </label>
 
-        <label for="offer-image" class="form-control">
-          <div class="label py-1">
-            <span class="label-text text-xs font-bold uppercase tracking-widest">Seleccionar Imagen Promocional</span>
+            <label for="offer-price" class="form-control">
+              <div class="label py-1">
+                <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Precio Oferta ($)</span>
+              </div>
+              <input
+                id="offer-price"
+                type="text"
+                [(ngModel)]="offerPrice"
+                placeholder="9.99"
+                class="input input-bordered input-sm w-full font-mono font-bold text-success"
+              />
+            </label>
           </div>
-          <div class="flex gap-2">
-            @for (img of presetImages; track img.url) {
-              <button
-                type="button"
-                (click)="imageUrl = img.url"
-                class="btn btn-xs flex-1"
-                [class.btn-primary]="imageUrl === img.url"
-                [class.btn-outline]="imageUrl !== img.url"
-              >
-                {{ img.label }}
+
+          <label for="offer-desc" class="form-control">
+            <div class="label py-1">
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Descripción de los Productos *</span>
+            </div>
+            <textarea
+              id="offer-desc"
+              [(ngModel)]="description"
+              rows="3"
+              placeholder="Describe qué productos incluye el paquete de descuento..."
+              class="textarea textarea-bordered textarea-sm w-full"
+            ></textarea>
+          </label>
+
+          <label for="offer-image" class="form-control">
+            <div class="label py-1">
+              <span class="label-text text-xs font-bold uppercase tracking-widest font-jost">Imagen del Producto / Combo</span>
+            </div>
+            <div class="flex gap-2">
+              @for (img of presetImages; track img.url) {
+                <button
+                  type="button"
+                  (click)="imageUrl = img.url"
+                  class="btn btn-xs flex-1"
+                  [class.btn-primary]="imageUrl === img.url"
+                  [class.btn-outline]="imageUrl !== img.url"
+                >
+                  {{ img.label }}
+                </button>
+              }
+            </div>
+            <input
+              id="offer-image"
+              type="text"
+              [(ngModel)]="imageUrl"
+              placeholder="URL de imagen (/assets/images/...)"
+              class="input input-bordered input-sm w-full mt-2 font-mono text-xs"
+            />
+          </label>
+
+          <div class="form-control mt-1">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input type="checkbox" [(ngModel)]="active" class="checkbox checkbox-primary checkbox-sm" />
+              <span class="label-text text-sm font-semibold">Oferta Activa (Mostrar a clientes)</span>
+            </label>
+          </div>
+
+          <div class="flex gap-2 mt-2">
+            <button (click)="saveOffer()" [disabled]="saving()" class="btn btn-primary btn-sm flex-1 font-bold border-none">
+              @if (saving()) {
+                <span class="loading loading-spinner loading-xs"></span>
+              } @else {
+                <ng-icon name="heroCheckCircle"></ng-icon>
+              }
+              {{ editingId ? 'Actualizar Oferta' : 'Publicar Oferta de Tienda' }}
+            </button>
+
+            @if (editingId) {
+              <button (click)="resetOfferForm()" class="btn btn-ghost btn-sm">
+                Cancelar
               </button>
             }
           </div>
-          <input
-            id="offer-image"
-            type="text"
-            [(ngModel)]="imageUrl"
-            placeholder="URL de imagen (/assets/images/...)"
-            class="input input-bordered input-sm w-full mt-2 font-mono text-xs"
-          />
-        </label>
-
-        <div class="form-control mt-1">
-          <label class="label cursor-pointer justify-start gap-3">
-            <input type="checkbox" [(ngModel)]="active" class="checkbox checkbox-primary checkbox-sm" />
-            <span class="label-text text-sm font-semibold">Oferta Activa (Visible para clientes)</span>
-          </label>
-        </div>
-
-        <div class="flex gap-2 mt-2">
-          <button (click)="saveOffer()" [disabled]="saving()" class="btn btn-primary btn-sm flex-1">
-            @if (saving()) {
-              <span class="loading loading-spinner loading-xs"></span>
-            } @else {
-              <ng-icon name="heroCheckCircle"></ng-icon>
-            }
-            {{ editingId ? 'Actualizar Oferta' : 'Publicar Oferta' }}
-          </button>
-
-          @if (editingId) {
-            <button (click)="resetForm()" class="btn btn-ghost btn-sm">
-              Cancelar
-            </button>
-          }
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Offers Grid / List -->
-  <div class="flex flex-col gap-4">
-    <div class="flex items-center justify-between">
-      <h2 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2">
-        <ng-icon name="heroSparkles" class="text-warning text-lg"></ng-icon>
-        Ofertas Registradas ({{ offers().length }})
-      </h2>
-      @if (loading()) {
-        <span class="loading loading-spinner loading-xs text-primary"></span>
+    <!-- Offers List -->
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold uppercase tracking-widest font-jost flex items-center gap-2 m-0">
+          <ng-icon name="heroSparkles" class="text-warning text-lg"></ng-icon>
+          Catálogo de Promociones Propias ({{ offers().length }})
+        </h2>
+        @if (loading()) {
+          <span class="loading loading-spinner loading-xs text-primary"></span>
+        }
+      </div>
+
+      @if (!offers().length && !loading()) {
+        <div class="card bg-base-100 border border-base-300 p-8 text-center">
+          <p class="text-sm text-base-content/60">No hay ofertas creadas. Utiliza el formulario lateral para agregar tu primera promoción.</p>
+        </div>
       }
-    </div>
 
-    @if (!offers().length && !loading()) {
-      <div class="card bg-base-100 border border-base-300 p-8 text-center">
-        <p class="text-sm text-base-content/60">No hay ofertas creadas. Utiliza el formulario lateral para agregar tu primera promoción.</p>
-      </div>
-    }
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        @for (offer of offers(); track offer.id) {
+          <div class="card bg-base-100 border border-base-300 shadow-sm overflow-hidden flex flex-col justify-between" [class.opacity-60]="!offer.active">
+            <div class="relative h-44 w-full bg-base-200 overflow-hidden">
+              <img [src]="offer.imageUrl || '/assets/images/offer_combo_grocery.jpg'" [alt]="offer.title" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+              
+              @if (offer.badgeTag) {
+                <span class="absolute top-3 left-3 bg-gradient-to-r from-amber-500 to-red-600 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-lg border border-amber-300">
+                  {{ offer.badgeTag }}
+                </span>
+              }
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      @for (offer of offers(); track offer.id) {
-        <div class="card bg-base-100 border border-base-300 shadow-sm overflow-hidden flex flex-col justify-between" [class.opacity-60]="!offer.active">
-          <!-- Image Header -->
-          <div class="relative h-44 w-full bg-base-200 overflow-hidden">
-            <img [src]="offer.imageUrl || '/assets/images/offer_combo_grocery.jpg'" [alt]="offer.title" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-            
-            @if (offer.badgeTag) {
-              <span class="absolute top-3 left-3 bg-gradient-to-r from-amber-500 to-red-600 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-lg border border-amber-300 animate-pulse">
-                {{ offer.badgeTag }}
+              <span
+                class="absolute top-3 right-3 badge badge-sm font-bold shadow-md"
+                [class.badge-success]="offer.active"
+                [class.badge-ghost]="!offer.active"
+              >
+                {{ offer.active ? 'Activa' : 'Inactiva' }}
               </span>
-            }
 
-            <span
-              class="absolute top-3 right-3 badge badge-sm font-bold shadow-md"
-              [class.badge-success]="offer.active"
-              [class.badge-ghost]="!offer.active"
-            >
-              {{ offer.active ? 'Activa' : 'Inactiva' }}
-            </span>
-
-            <div class="absolute bottom-3 left-3 right-3 text-white">
-              <h3 class="text-base font-extrabold leading-tight text-white drop-shadow-md">{{ offer.title }}</h3>
-            </div>
-          </div>
-
-          <!-- Body -->
-          <div class="p-4 flex-1 flex flex-col justify-between gap-3">
-            <p class="text-xs text-base-content/80 line-clamp-3 leading-relaxed">
-              {{ offer.description }}
-            </p>
-
-            <div class="flex items-center justify-between border-t border-base-200 pt-3 mt-auto">
-              <div>
-                @if (offer.offerPrice) {
-                  <div class="flex items-baseline gap-2">
-                    <span class="text-lg font-mono font-extrabold text-success">${{ offer.offerPrice }}</span>
-                    @if (offer.originalPrice) {
-                      <span class="text-xs font-mono text-base-content/50 line-through">${{ offer.originalPrice }}</span>
-                    }
-                  </div>
-                } @else if (offer.originalPrice) {
-                  <span class="text-base font-mono font-bold text-base-content">${{ offer.originalPrice }}</span>
-                }
+              <div class="absolute bottom-3 left-3 right-3 text-white">
+                <h3 class="text-base font-extrabold leading-tight text-white drop-shadow-md m-0">{{ offer.title }}</h3>
               </div>
+            </div>
 
-              <div class="flex items-center gap-1">
-                <button
-                  type="button"
-                  (click)="toggleActive(offer)"
-                  class="btn btn-ghost btn-xs"
-                  [title]="offer.active ? 'Desactivar oferta' : 'Activar oferta'"
-                >
-                  <ng-icon [name]="offer.active ? 'heroEye' : 'heroEyeSlash'" class="text-sm"></ng-icon>
-                </button>
-                <button
-                  type="button"
-                  (click)="editOffer(offer)"
-                  class="btn btn-ghost btn-xs text-info"
-                  title="Editar oferta"
-                >
-                  <ng-icon name="heroPencilSquare" class="text-sm"></ng-icon>
-                </button>
-                <button
-                  type="button"
-                  (click)="deleteOffer(offer.id)"
-                  class="btn btn-ghost btn-xs text-error"
-                  title="Eliminar oferta"
-                >
-                  <ng-icon name="heroTrash" class="text-sm"></ng-icon>
-                </button>
+            <div class="p-4 flex-1 flex flex-col justify-between gap-3">
+              <p class="text-xs text-base-content/80 line-clamp-3 leading-relaxed m-0">
+                {{ offer.description }}
+              </p>
+
+              <div class="flex items-center justify-between border-t border-base-200 pt-3 mt-auto">
+                <div>
+                  @if (offer.offerPrice) {
+                    <div class="flex items-baseline gap-2">
+                      <span class="text-lg font-mono font-extrabold text-success">${{ offer.offerPrice }}</span>
+                      @if (offer.originalPrice) {
+                        <span class="text-xs font-mono text-base-content/50 line-through">${{ offer.originalPrice }}</span>
+                      }
+                    </div>
+                  } @else if (offer.originalPrice) {
+                    <span class="text-base font-mono font-bold text-base-content">${{ offer.originalPrice }}</span>
+                  }
+                </div>
+
+                <div class="flex items-center gap-1">
+                  <button type="button" (click)="toggleActive(offer)" class="btn btn-ghost btn-xs" [title]="offer.active ? 'Desactivar' : 'Activar'">
+                    <ng-icon [name]="offer.active ? 'heroEye' : 'heroEyeSlash'" class="text-sm"></ng-icon>
+                  </button>
+                  <button type="button" (click)="editOffer(offer)" class="btn btn-ghost btn-xs text-info" title="Editar">
+                    <ng-icon name="heroPencilSquare" class="text-sm"></ng-icon>
+                  </button>
+                  <button type="button" (click)="deleteOffer(offer.id)" class="btn btn-ghost btn-xs text-error" title="Eliminar">
+                    <ng-icon name="heroTrash" class="text-sm"></ng-icon>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      }
+        }
+      </div>
     </div>
   </div>
-</div>
+}
+
+<!-- ==================================================== -->
+<!-- TAB 2: ANUNCIOS & PUBLICIDAD DE NEGOCIOS AUSPICIADORES -->
+<!-- ==================================================== -->
+@if (activeTab() === 'SPONSOR_ADS') {
+  <div class="grid grid-cols-1 lg:grid-cols-[440px_1fr] gap-6 items-start animate-fadeIn font-manrope">
+    <!-- Form Panel: Sponsor Ads -->
+    <div class="card bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-amber-500/30 shadow-xl text-white">
+      <div class="card-body p-5 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-amber-500/20 pb-3">
+          <h2 class="text-base font-bold font-jost text-amber-300 flex items-center gap-2 m-0">
+            <ng-icon name="heroSparkles"></ng-icon>
+            {{ editingSponsorId ? 'Editar Anuncio Auspiciado' : 'Registrar Nuevo Negocio Anunciante' }}
+          </h2>
+        </div>
+
+        <div class="space-y-3.5">
+          <div class="form-control">
+            <label class="label py-1 text-xs font-bold text-amber-200">
+              <span>Nombre del Negocio Auspiciador *</span>
+            </label>
+            <input
+              type="text"
+              [(ngModel)]="sponsorBusinessName"
+              placeholder="Ej. Panadería & Pastelería El Trigo"
+              class="input input-bordered input-sm bg-slate-950 text-white border-slate-700 focus:border-amber-400"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="form-control">
+              <label class="label py-1 text-xs font-bold text-amber-200">
+                <span>Categoría de Negocio</span>
+              </label>
+              <select [(ngModel)]="sponsorCategory" class="select select-bordered select-sm bg-slate-950 text-white border-slate-700">
+                <option value="Panadería Vecinal">Panadería</option>
+                <option value="Salud y Farmacia">Farmacia</option>
+                <option value="Barbería & Estética">Barbería</option>
+                <option value="Ferretería & Hogar">Ferretería</option>
+                <option value="Comida Rápida">Pizzería/Restaurante</option>
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label py-1 text-xs font-bold text-amber-200">
+                <span>Cuota Mensual ($) *</span>
+              </label>
+              <input
+                type="number"
+                step="5"
+                [(ngModel)]="sponsorMonthlyFee"
+                placeholder="20.00"
+                class="input input-bordered input-sm bg-slate-950 text-amber-400 font-mono font-extrabold border-slate-700"
+              />
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label class="label py-1 text-xs font-bold text-amber-200">
+              <span>Beneficio / Descuento para el Vecino *</span>
+            </label>
+            <input
+              type="text"
+              [(ngModel)]="sponsorOfferTag"
+              placeholder="Ej. 10% OFF al mostrar tu Estado de Cuenta"
+              class="input input-bordered input-sm bg-slate-950 text-white border-slate-700 font-bold"
+            />
+          </div>
+
+          <div class="form-control">
+            <label class="label py-1 text-xs font-bold text-amber-200">
+              <span>Teléfono WhatsApp del Anunciante</span>
+            </label>
+            <input
+              type="text"
+              [(ngModel)]="sponsorPhoneWhatsApp"
+              placeholder="Ej. 593999123456"
+              class="input input-bordered input-sm bg-slate-950 text-white font-mono border-slate-700"
+            />
+          </div>
+
+          <div class="form-control">
+            <label class="label py-1 text-xs font-bold text-amber-200">
+              <span>Formato de Despliegue en Estado de Cuenta</span>
+            </label>
+            <select [(ngModel)]="sponsorDisplayFormat" class="select select-bordered select-sm bg-slate-950 text-white border-slate-700 font-medium">
+              <option value="BOTH">Pop-Up Modal + Banner Embebido (Máximo Impacto)</option>
+              <option value="POPUP">Solo Pop-Up de Bienvenida</option>
+              <option value="BANNER">Solo Banner Embebido</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label py-1 text-xs font-bold text-amber-200">
+              <span>Descripción de la Oferta Auspiciada</span>
+            </label>
+            <textarea
+              [(ngModel)]="sponsorDescription"
+              rows="3"
+              placeholder="Explica qué le ofrece este negocio vecino a los clientes del minimarket..."
+              class="textarea textarea-bordered textarea-sm bg-slate-950 text-white border-slate-700"
+            ></textarea>
+          </div>
+
+          <div class="flex gap-2 pt-2">
+            <button
+              type="button"
+              (click)="saveSponsorAd()"
+              class="btn btn-sm bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold font-jost border-none flex-1 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5"
+            >
+              <ng-icon [name]="editingSponsorId ? 'heroCheck' : 'heroPlus'" class="text-base"></ng-icon>
+              <span>{{ editingSponsorId ? 'Actualizar Anuncio Auspiciado' : 'Guardar & Publicar Anuncio' }}</span>
+            </button>
+            @if (editingSponsorId) {
+              <button type="button" (click)="resetSponsorForm()" class="btn btn-sm btn-ghost text-white">Cancelar</button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sponsor Ads List & Preview -->
+    <div class="space-y-4 font-manrope">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold uppercase tracking-widest font-jost flex items-center gap-2 m-0 text-base-content">
+          <ng-icon name="heroMegaphone" class="text-amber-500 text-base"></ng-icon>
+          <span>Negocios Auspiciadores Activos</span>
+          <span class="badge badge-warning font-mono font-bold">{{ sponsorAds().length }} anunciantes</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4">
+        @for (ad of sponsorAds(); track ad.id) {
+          <div class="card bg-base-100 border border-base-300 shadow-md overflow-hidden" [class.opacity-60]="!ad.active">
+            <div class="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-400/40 text-amber-500 flex items-center justify-center text-2xl font-bold shrink-0">
+                  <ng-icon name="heroBuildingStorefront" class="text-2xl"></ng-icon>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="badge badge-warning font-bold text-[10px] uppercase">{{ ad.offerTag }}</span>
+                    <span class="text-xs font-mono font-semibold text-base-content/60">{{ ad.category }}</span>
+                  </div>
+                  <h3 class="text-lg font-bold font-jost m-0 mt-0.5 text-base-content">{{ ad.businessName }}</h3>
+                  <p class="text-xs text-base-content/70 m-0 mt-1 max-w-xl">{{ ad.description }}</p>
+                  <div class="flex items-center gap-3 text-xs mt-2 font-mono text-base-content/60">
+                    <span>Cuota: <strong class="text-emerald-500">${{ ad.monthlyFee }}/mes</strong></span>
+                    <span>• Formato: <strong>{{ ad.displayFormat }}</strong></span>
+                    <span>• WhatsApp: <strong>{{ ad.phoneWhatsApp || 'No registrado' }}</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex sm:flex-col items-center gap-2 shrink-0 border-t sm:border-t-0 sm:border-l border-base-200 pt-3 sm:pt-0 sm:pl-4 w-full sm:w-auto justify-end">
+                <button
+                  type="button"
+                  (click)="toggleSponsorActive(ad)"
+                  class="btn btn-xs flex-1 sm:flex-none gap-1"
+                  [class.btn-success]="ad.active"
+                  [class.btn-outline]="!ad.active"
+                >
+                  <ng-icon [name]="ad.active ? 'heroCheckCircle' : 'heroPause'" class="text-xs"></ng-icon>
+                  {{ ad.active ? 'Activo' : 'Pausado' }}
+                </button>
+                <button type="button" (click)="editSponsorAd(ad)" class="btn btn-xs btn-ghost text-info gap-1">
+                  <ng-icon name="heroPencil" class="text-xs"></ng-icon> Editar
+                </button>
+                <button type="button" (click)="deleteSponsorAd(ad.id)" class="btn btn-xs btn-ghost text-error gap-1">
+                  <ng-icon name="heroTrash" class="text-xs"></ng-icon> Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -5,10 +5,10 @@
 
 <section class="mb-8">
   @if (!currentSession()) {
-    <div class="card bg-base-100 shadow-md max-w-md">
+    <div class="card bg-base-100 shadow-md max-w-md rounded-none">
       <div class="card-body gap-4">
         <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-box bg-error text-error-content grid place-items-center text-2xl">
+          <div class="w-12 h-12 rounded-xl bg-error text-error-content grid place-items-center text-2xl">
             <ng-icon name="heroLockClosed"></ng-icon>
           </div>
           <div>
@@ -39,31 +39,65 @@
   }
 
   @if (currentSession()) {
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-      <div class="card bg-primary text-primary-content shadow-lg">
+    <!-- Vault Security Alert Banner (En Esteroides) -->
+    @if (isVaultAlert) {
+      <div class="mb-5 bg-gradient-to-r from-amber-500/20 via-orange-500/15 to-red-500/20 border-2 border-amber-500/40 rounded-none p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg animate-pulse">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-none bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl border border-amber-500/40 shrink-0">
+            <ng-icon name="heroShieldCheck"></ng-icon>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white font-jost flex items-center gap-2">
+              <ng-icon name="heroShieldCheck" class="text-amber-400 text-base"></ng-icon>
+              Alerta de Seguridad Anti-Atraco (Bóveda)
+              <span class="badge badge-warning badge-xs font-mono font-bold">Límite $200 Excedido</span>
+            </h3>
+            <p class="text-xs text-slate-200 mt-0.5 font-manrope">
+              Efectivo acumulado en cajón: <strong class="font-mono text-amber-300">${{ currentCalculatedBalance | number:'1.2-2' }}</strong>. Retiro recomendado a caja fuerte: <strong class="font-mono text-emerald-400">${{ recommendedVaultDrop | number:'1.2-2' }}</strong>.
+            </p>
+          </div>
+        </div>
+
+        <button (click)="executeVaultDrop()" class="btn btn-warning btn-sm font-bold font-jost gap-1.5 shadow-md hover:scale-105 transition-transform shrink-0">
+          <ng-icon name="heroArchiveBox" class="text-lg"></ng-icon>
+          Confirmar Retiro a Bóveda (${{ recommendedVaultDrop | number:'1.2-2' }})
+        </button>
+      </div>
+    }
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 ">
+      <div class="card bg-amber-300 text-primary-content rounded-none shadow-lg">
         <div class="card-body p-4 sm:p-6 gap-4">
           <div class="flex items-center gap-2 text-xs uppercase tracking-widest text-primary-content/70">
-            <span class="badge badge-success badge-xs"></span>
+            <span class="badge badge-xs"></span>
             Turno Activo · {{ currentSession()!.openedAt | date:'HH:mm' }}
           </div>
           <div>
-            <p class="text-[10px] sm:text-xs uppercase tracking-widest text-primary-content/85">Balance Calculado</p>
+            <p class="text-[10px] sm:text-xs uppercase tracking-widest text-primary-content/85">Balance Calculado en Cajón</p>
             <p class="text-2xl sm:text-3xl lg:text-4xl font-mono font-bold">${{ currentCalculatedBalance | number:'1.2-2' }}</p>
           </div>
-          <div class="stats stats-vertical bg-primary/20 text-primary-content">
+          
+          <div class="bg-primary/20 rounded-none p-3 border border-primary-content/20 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-primary-content/80 block font-jost">Utilidad Neta Limpia del Turno</span>
+              <span class="text-xl font-mono font-black text-black font-bold">+${{ sessionNetProfit | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div class="stats stats-vertical border border-primary-content/20 rounded-none bg-primary/20 text-primary-content">
             <div class="stat p-3">
-              <div class="stat-title text-xs text-primary-content/75">Ingresos</div>
+              <div class="stat-title text-xs text-primary-content/75">Ingresos Totales</div>
               <div class="stat-value text-base sm:text-lg font-mono">+{{ totalIncomes | number:'1.2-2' }}</div>
             </div>
             <div class="stat p-3">
-              <div class="stat-title text-xs text-primary-content/75">Egresos</div>
+              <div class="stat-title text-xs text-primary-content/75">Egresos Totales</div>
               <div class="stat-value text-base sm:text-lg font-mono">-{{ totalExpenses | number:'1.2-2' }}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="card bg-base-100 border border-base-300 shadow-sm">
+      <div class="card bg-base-100 border border-base-300 rounded-none shadow-sm">
         <div class="card-body gap-4">
           <h3 class="text-sm font-bold uppercase tracking-widest flex items-center gap-2">
             <ng-icon name="heroArrowsRightLeft"></ng-icon>
@@ -98,7 +132,7 @@
         </div>
       </div>
 
-      <div class="card bg-base-100 border border-error/30 shadow-sm">
+      <div class="card bg-base-100 border border-error/30 rounded-none shadow-sm">
         <div class="card-body gap-4">
           <h3 class="text-sm font-bold uppercase tracking-widest text-error flex items-center gap-2">
             <ng-icon name="heroArchiveBox"></ng-icon>

@@ -12,6 +12,11 @@ cashRoutes.get(
 );
 
 cashRoutes.get(
+  "/steroids-summary",
+  asyncHandler(cashController.steroidsSummary),
+);
+
+cashRoutes.get(
   "/history",
   allowRoles(UserRole.ADMIN),
   asyncHandler(cashController.history),

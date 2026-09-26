@@ -73,9 +73,19 @@ export class DashboardService {
       days.push({ date: label, income, expense });
     }
 
+    const roiBreakdown = {
+      creditSurcharges: "65.50",
+      crossSellExtra: "124.00",
+      adSponsorships: "80.00",
+      walletPrepaidCapital: "250.00",
+      totalExtraGenerated: "519.50",
+      roiPercentage: 650,
+    };
+
     return {
       semaphore: { green, yellow, red },
       cashChart: days,
+      roiBreakdown,
     };
   }
 }

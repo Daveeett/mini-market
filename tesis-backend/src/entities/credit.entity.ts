@@ -27,6 +27,15 @@ export class Credit extends BaseEntity {
   @Column({ name: "due_date", type: "date" })
   dueDate!: string;
 
+  @Column({ name: "base_amount", type: "decimal", precision: 12, scale: 2, nullable: true })
+  baseAmount?: string;
+
+  @Column({ name: "surcharge_percent", type: "decimal", precision: 5, scale: 2, default: 0 })
+  surchargePercent!: string;
+
+  @Column({ name: "surcharge_amount", type: "decimal", precision: 12, scale: 2, default: 0 })
+  surchargeAmount!: string;
+
   @Column({ type: "decimal", precision: 12, scale: 2 })
   amount!: string;
 

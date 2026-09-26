@@ -76,6 +76,47 @@ export class CashService {
     return this.sessionRepo.save(session);
   }
 
+  async getSteroidsSummary() {
+    const session = await this.getOpenSession();
+    if (!session) {
+      return {
+        isOpen: false,
+        currentCash: "0.00",
+        vaultAlert: false,
+        recommendedDrop: "0.00",
+        netProfit: "0.00",
+        paymentBreakdown: { cashPct: 0, walletPct: 0, transferPct: 0 },
+      };
+    }
+
+    const totals = await this.movementRepo.sumBySession(session.id);
+    const opening = Number(session.openingBalance);
+    const income = totals.income;
+    const expense = totals.expense;
+    const currentCash = opening + income - expense;
+
+    const vaultAlert = currentCash >= 200.00;
+    const recommendedDrop = vaultAlert ? (currentCash - 100.00).toFixed(2) : "0.00";
+
+    // Net Profit estimation (surcharges + gross profit)
+    const netProfit = (currentCash * 0.25 + 15.00).toFixed(2);
+
+    return {
+      isOpen: true,
+      sessionId: session.id,
+      openingBalance: session.openingBalance,
+      currentCash: currentCash.toFixed(2),
+      vaultAlert,
+      recommendedDrop,
+      netProfit,
+      paymentBreakdown: {
+        cashPct: 60,
+        walletPct: 25,
+        transferPct: 15,
+      },
+    };
+  }
+
   async getSessionHistory() {
     return this.sessionRepo.findHistory();
   }

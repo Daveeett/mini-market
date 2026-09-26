@@ -38,6 +38,10 @@ class CashController {
     const session = await this.cashService.closeCash(closingBalance, req.auth!.userId);
     res.status(200).json(ok("Caja cerrada", session));
   };
+  steroidsSummary = async (_req: Request, res: Response): Promise<void> => {
+    const summary = await this.cashService.getSteroidsSummary();
+    res.status(200).json(ok("Resumen de caja inteligente obtenido", summary));
+  };
 }
 
 export const cashController = new CashController();

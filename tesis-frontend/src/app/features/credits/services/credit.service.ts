@@ -15,7 +15,13 @@ export class CreditService {
     );
   }
 
-  createCredit(customerId: string, payload: { amount: number; dueDate: string; email: string }) {
+  createCredit(customerId: string, payload: {
+    amount: number;
+    baseAmount?: number;
+    surchargePercent?: number;
+    dueDate: string;
+    email: string;
+  }) {
     return this.http.post<ApiResponse<CreditDetail>>(
       `${environment.apiBaseUrl}/credits`,
       {

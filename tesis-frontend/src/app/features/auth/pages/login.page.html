@@ -1,82 +1,198 @@
+<main class="min-h-screen w-full flex flex-col lg:flex-row bg-base-200 text-base-content overflow-hidden font-manrope">
+  <!-- Left Column: Hero & Brand Showcase -->
+  <section class="relative hidden lg:flex lg:w-7/12 xl:w-3/5 login-hero-bg flex-col justify-between p-12 xl:p-16 text-white overflow-hidden" aria-label="Información de la plataforma">
+    <!-- Ambient Glow Effects -->
+    <div class="glow-ambient glow-ambient-1 animate-pulse-glow" aria-hidden="true"></div>
+    <div class="glow-ambient glow-ambient-2 animate-pulse-glow" aria-hidden="true"></div>
 
-<section class="min-h-screen bg-base-200">
-  <div class="grid min-h-screen w-full xl:grid-cols-[60%_40%]">
-    <div class="hidden xl:flex bg-primary p-10 items-center min-h-screen">
-      <div class="max-w-xl text-white">
-        <h2 class="text-4xl font-extrabold mb-4">Distrov Inc.</h2>
-        <p class="text-base leading-8">Una solución para tu problema</p>
+    <!-- Top Branding -->
+    <div class="relative z-10 flex items-center gap-3.5">
+      <div class="flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/20 backdrop-blur-md border border-primary/40 text-primary shadow-lg shadow-primary/10">
+        <ng-icon name="heroBuildingStorefront" class="text-2xl"></ng-icon>
+      </div>
+      <div>
+        <span class="text-2xl font-black tracking-tight text-white block ">Mini Market Urbano</span>
       </div>
     </div>
 
-    <div class="flex items-center justify-center p-6 bg-base-200">
-      <div class="card w-full max-w-md bg-base-100 shadow-2xl">
-        <div class="card-body gap-6">
-          <div class="text-center">
-            <div class="inline-flex items-center justify-center w-12 h-12 rounded-box bg-primary text-primary-content mb-3">
-              <ng-icon name="heroBuildingStorefront" class="text-xl"></ng-icon>
-            </div>
-            <h1 class="text-3xl font-extrabold text-primary m-0">Mini Market Urbano</h1>
-            <p class="text-base-content/70 font-medium mt-2">Gestión de microcréditos y cartera</p>
-          </div>
+    <!-- Center Hero Content -->
+    <div class="relative z-10 max-w-xl my-auto py-10">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-primary mb-6 shadow-sm font-manrope">
+        <ng-icon name="heroSparkles" class="text-base"></ng-icon>
+        <span>Gestión Comercial de Alto Rendimiento</span>
+      </div>
 
-          <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4">
-            <label for="login-email" class="form-control w-full">
-              <div class="label">
-                <span class="label-text text-xs font-bold uppercase tracking-widest">Correo</span>
+      <h1 class="text-4xl xl:text-5xl font-black leading-[1.2] tracking-tight mb-5 text-white font-merriweather">
+        El control total de tu negocio, <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-yellow-200 to-amber-400">más simple y rentable.</span>
+      </h1>
+
+      <p class="text-base xl:text-lg text-slate-200/90 leading-relaxed mb-8 font-manrope">
+        Optimiza tus ventas de caja, digitaliza tus microcréditos y fideliza a tus clientes con una plataforma moderna, ágil y diseñada para el crecimiento de tu minimarket.
+      </p>
+    </div>
+
+    <!-- Bottom Metrics / Proof -->
+    <div class="relative z-10 pt-6 border-t border-white/10 flex items-center justify-between text-xs text-slate-300 font-manrope">
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-1.5">
+          <ng-icon name="heroCheckBadge" class="text-base text-primary"></ng-icon>
+          <span class="font-medium">Acceso Multi-rol</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Right Column: Login Card -->
+  <section class="w-full lg:w-5/12 xl:w-2/5 flex flex-col justify-center items-center p-6 sm:p-10 lg:p-12 relative bg-base-200" aria-label="Formulario de inicio de sesión">
+    <!-- Mobile Header Logo (visible only on small screens) -->
+    <header class="lg:hidden flex flex-col items-center mb-8 text-center">
+      <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/20 border border-primary/40 text-primary shadow-lg mb-3">
+        <ng-icon name="heroBuildingStorefront" class="text-3xl"></ng-icon>
+      </div>
+      <h2 class="text-2xl font-black tracking-tight text-base-content m-0 font-jost">Mini Market Urbano</h2>
+      <p class="text-xs font-medium text-base-content/70 mt-1 font-manrope">Plataforma POS & Microcréditos</p>
+    </header>
+
+    <!-- Main Card Container -->
+    <div class="w-full max-w-md">
+      <div class="glass-card-login rounded-3xl p-7 sm:p-9 shadow-2xl border border-white/10 relative overflow-hidden">
+        
+        <!-- Header Text -->
+        <div class="mb-6">
+          <h2 class="text-2xl font-black tracking-tight text-white font-manrope">Iniciar Sesión</h2>
+          <p class="text-xs sm:text-sm text-base-content/70 mt-1 font-manrope">Ingresa tus credenciales autorizadas para comenzar.</p>
+        </div>
+
+        <!-- Login Form -->
+        <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4 font-manrope">
+          <!-- Email Field -->
+          <div class="form-control w-full">
+            <label for="login-email" class="label pb-1.5 pt-0">
+              <span class="label-text text-xs font-bold uppercase tracking-wider text-base-content/80 font-jost">Correo Electrónico</span>
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-base-content/50">
+                <ng-icon name="heroInbox" class="text-lg"></ng-icon>
               </div>
               <input
                 id="login-email"
                 formControlName="email"
                 type="email"
                 placeholder="admin@minimarket.local"
-                class="input input-bordered w-full"
+                class="input input-bordered w-full pl-10 bg-base-300/60 focus:bg-base-300 focus:border-primary text-sm transition-all font-manrope"
                 [class.input-error]="form.get('email')?.invalid && form.get('email')?.touched"
+                autocomplete="email"
                 aria-describedby="login-email-error"
               />
-              @if (form.get('email')?.invalid && form.get('email')?.touched) {
-                <div class="label">
-                  <span class="label-text-alt text-error">Correo electrónico inválido o requerido</span>
-                </div>
-              }
-            </label>
+            </div>
+            @if (form.get('email')?.invalid && form.get('email')?.touched) {
+              <div class="label py-1">
+                <span class="label-text-alt text-error text-xs flex items-center gap-1">
+                  <ng-icon name="heroExclamationCircle" class="text-sm"></ng-icon>
+                  Correo electrónico inválido o requerido
+                </span>
+              </div>
+            }
+          </div>
 
-            <label for="login-password" class="form-control w-full">
-              <div class="label">
-                <span class="label-text text-xs font-bold uppercase tracking-widest">Clave</span>
+          <!-- Password Field -->
+          <div class="form-control w-full">
+            <div class="flex items-center justify-between pb-1.5">
+              <label for="login-password" class="label-text text-xs font-bold uppercase tracking-wider text-base-content/80 font-jost">Contraseña</label>
+            </div>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-base-content/50">
+                <ng-icon name="heroLockClosed" class="text-lg"></ng-icon>
               </div>
               <input
                 id="login-password"
                 formControlName="password"
-                type="password"
-                placeholder="••••••••"
-                class="input input-bordered w-full"
+                [type]="showPassword() ? 'text' : 'password'"
+                placeholder="••••••••••••"
+                class="input input-bordered w-full pl-10 pr-11 bg-base-300/60 focus:bg-base-300 focus:border-primary text-sm transition-all font-manrope"
                 [class.input-error]="form.get('password')?.invalid && form.get('password')?.touched"
+                autocomplete="current-password"
               />
-              @if (form.get('password')?.invalid && form.get('password')?.touched) {
-                <div class="label">
-                  <span class="label-text-alt text-error">Contraseña es requerida</span>
-                </div>
-              }
-            </label>
-
-            <button class="btn btn-primary w-full mt-2" type="submit" [disabled]="loading() || form.invalid">
-              {{ loading() ? 'Ingresando...' : 'Ingresar' }}
-            </button>
-          </form>
-
-          <div class="flex flex-col gap-2 text-sm">
-            <div class="alert alert-info text-xs">
-              <!-- TODO: Remove demo credentials before production -->
-              <span>Usuario demo: admin&#64;minimarket.local / Admin123*</span>
+              <button
+                type="button"
+                (click)="toggleShowPassword()"
+                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-base-content/50 hover:text-primary transition-colors cursor-pointer"
+                [title]="showPassword() ? 'Ocultar contraseña' : 'Ver contraseña'"
+                aria-label="Alternar visibilidad de contraseña"
+              >
+                <ng-icon [name]="showPassword() ? 'heroEyeSlash' : 'heroEye'" class="text-lg"></ng-icon>
+              </button>
             </div>
-            @if (error()) {
-              <div id="login-email-error" class="alert alert-error text-xs" role="alert">
-                <span>{{ error() }}</span>
+            @if (form.get('password')?.invalid && form.get('password')?.touched) {
+              <div class="label py-1">
+                <span class="label-text-alt text-error text-xs flex items-center gap-1">
+                  <ng-icon name="heroExclamationCircle" class="text-sm"></ng-icon>
+                  La contraseña es requerida
+                </span>
               </div>
             }
           </div>
+
+          <!-- Submit Button -->
+          <button
+            id="login-submit-button"
+            class="btn btn-primary w-full mt-2 font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.99] transition-all text-sm h-12 font-jost uppercase tracking-wider"
+            type="submit"
+            [disabled]="loading() || form.invalid"
+          >
+            @if (loading()) {
+              <span class="loading loading-spinner loading-sm"></span>
+              <span>Ingresando al sistema...</span>
+            } @else {
+              <span>Ingresar al Panel</span>
+              <ng-icon name="heroSparkles" class="text-base ml-1"></ng-icon>
+            }
+          </button>
+        </form>
+
+        <!-- Error Alert -->
+        @if (error()) {
+          <div id="login-email-error" class="alert alert-error mt-4 text-xs py-2.5 px-3.5 rounded-xl flex items-center gap-2 shadow-md font-manrope" role="alert">
+            <ng-icon name="heroExclamationCircle" class="text-lg shrink-0"></ng-icon>
+            <span>{{ error() }}</span>
+          </div>
+        }
+
+        <!-- Demo Credentials Helper Banner -->
+        <div class="mt-6 pt-5 border-t border-white/10 flex flex-col gap-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-base-content/60 flex items-center gap-1.5 font-jost">
+              <ng-icon name="heroCheckCircle" class="text-primary text-sm"></ng-icon>
+              Acceso Demo 
+            </span>
+            <button
+              type="button"
+              (click)="fillDemo()"
+              class="btn btn-xs btn-ghost text-primary hover:bg-primary/10 border border-primary/20 rounded-lg normal-case font-medium font-manrope"
+            >
+              Autocompletar
+            </button>
+          </div>
+          
+          <div class="bg-base-300/40 rounded-xl p-2.5 text-xs text-base-content/75 flex flex-col gap-1 border border-white/5 font-mono">
+            <div class="flex items-center justify-between">
+              <span class="text-base-content/50">Usuario:</span>
+              <span class="text-white font-medium select-all">admin&#64;minimarket.local</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-base-content/50">Clave:</span>
+              <span class="text-white font-medium select-all">Admin123*</span>
+            </div>
+          </div>
         </div>
+
       </div>
+
+      <!-- Trust Footer -->
+      <footer class="text-center mt-6 text-xs text-base-content/60 flex items-center justify-center gap-2 font-manrope">
+        <ng-icon name="heroShieldCheck" class="text-emerald-400 text-sm"></ng-icon>
+        <span>Sesión protegida &bull; Mini Market Urbano &copy; 2026</span>
+      </footer>
     </div>
-  </div>
-</section>
+  </section>
+</main>

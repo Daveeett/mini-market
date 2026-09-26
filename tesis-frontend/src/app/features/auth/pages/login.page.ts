@@ -18,6 +18,7 @@ import { ApiResponse } from '@shared/models/api.models';
 export class LoginPage {
   readonly loading = signal(false);
   readonly error = signal('');
+  readonly showPassword = signal(false);
 
   // TODO: Remove demo credentials before production
   readonly form = this.fb.group({
@@ -26,6 +27,17 @@ export class LoginPage {
   });
 
   private readonly destroyRef = inject(DestroyRef);
+
+  toggleShowPassword(): void {
+    this.showPassword.update((v) => !v);
+  }
+
+  fillDemo(): void {
+    this.form.patchValue({
+      email: 'admin@minimarket.local',
+      password: 'Admin123*',
+    });
+  }
 
   constructor(
     private readonly fb: FormBuilder,

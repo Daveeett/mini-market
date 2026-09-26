@@ -110,21 +110,28 @@ export class CreditService {
     userId: string;
     email: string;
     amount: number;
+    baseAmount?: number;
+    surchargePercent?: number;
     dueDate: string;
   }) {
     const customer = await this.customerRepo.findByIdWithAccount(input.customerId);
     if (!customer) throw new AppError("Cliente no encontrado", 404, "CUSTOMER_NOT_FOUND");
     if (!customer.creditAccount) throw new AppError("Cliente no tiene cuenta de credito", 400, "NO_CREDIT_ACCOUNT");
 
+    // Option C: Differential pricing (Cash vs Credit Surcharge)
+    const baseAmt = Number(input.baseAmount || input.amount);
+    const surchargePct = Number(input.surchargePercent ?? 5);
+    const surchargeAmt = Number(((baseAmt * surchargePct) / 100).toFixed(2));
+    const finalAmount = Number((baseAmt + surchargeAmt).toFixed(2));
+
     const currentBalance = Number(customer.creditAccount.currentBalance);
     const maxCredit = Number(customer.maxCredit);
-    const requestedAmount = Number(input.amount);
 
-    if ((currentBalance + requestedAmount) > maxCredit) {
+    if ((currentBalance + finalAmount) > maxCredit) {
       const available = maxCredit - currentBalance;
       const availableMsg = available > 0 ? available.toFixed(2) : "0.00";
       throw new AppError(
-        `El monto excede el límite de crédito del cliente. Crédito disponible: S/.${availableMsg}`,
+        `El monto total con recargo ($${finalAmount.toFixed(2)}) excede el límite de crédito del cliente. Crédito disponible: $${availableMsg}`,
         400,
         "CREDIT_LIMIT_EXCEEDED"
       );
@@ -148,7 +155,7 @@ export class CreditService {
     if (!user) throw new AppError("Usuario no encontrado", 404, "USER_NOT_FOUND");
 
     const sale = this.saleRepo.create({
-      totalAmount: input.amount.toFixed(2),
+      totalAmount: finalAmount.toFixed(2),
       paymentType: PaymentType.CREDIT,
       user,
       customer,
@@ -159,25 +166,30 @@ export class CreditService {
       creditAccount: customer.creditAccount,
       sale,
       dueDate: input.dueDate,
-      amount: input.amount.toFixed(2),
+      baseAmount: baseAmt.toFixed(2),
+      surchargePercent: surchargePct.toFixed(2),
+      surchargeAmount: surchargeAmt.toFixed(2),
+      amount: finalAmount.toFixed(2),
       status: CreditStatus.OPEN,
     });
     await this.creditRepo.save(credit);
 
     const account = customer.creditAccount;
-    account.totalDebt = (Number(account.totalDebt) + input.amount).toFixed(2);
+    account.totalDebt = (Number(account.totalDebt) + finalAmount).toFixed(2);
     account.currentBalance = (Number(account.totalDebt) - Number(account.totalPaid)).toFixed(2);
     await this.accountRepo.save(account);
 
     const tokenResult = await this.statementService.generateTokenByCustomer(customer.id);
-    // En caso de que haya varias URLs en CORS separadas por coma, usar la primera para el link del correo
     const mainFrontendUrl = config.server.frontendBaseUrl.split(",")[0].trim();
     const statementUrl = `${mainFrontendUrl}/estado-cuenta/${tokenResult.token}`;
 
     await this.emailService.sendCreditNotification({
       to: input.email,
       customerName: customer.fullName,
-      amount: input.amount.toFixed(2),
+      amount: finalAmount.toFixed(2),
+      baseAmount: baseAmt.toFixed(2),
+      surchargePercent: surchargePct.toFixed(2),
+      surchargeAmount: surchargeAmt.toFixed(2),
       dueDate: input.dueDate,
       statementUrl,
     });

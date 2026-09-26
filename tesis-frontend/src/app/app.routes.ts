@@ -42,9 +42,14 @@ export const routes: Routes = [
 					import('./features/credits/pages/credits.page').then((m) => m.CreditsPage),
 			},
 			{
+				path: 'wallet',
+				loadComponent: () =>
+					import('./features/wallet/pages/wallet.page').then((m) => m.WalletPage),
+			},
+			{
 				path: 'cash',
-				redirectTo: 'dashboard',
-				pathMatch: 'full',
+				loadComponent: () =>
+					import('./features/cash/pages/cash.page').then((m) => m.CashPage),
 			},
 			{
 				path: 'reports',

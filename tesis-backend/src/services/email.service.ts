@@ -12,6 +12,9 @@ interface CreditNotificationData {
   amount: string;
   dueDate: string;
   statementUrl: string;
+  baseAmount?: string;
+  surchargePercent?: string;
+  surchargeAmount?: string;
 }
 
 export class EmailService {
@@ -59,19 +62,45 @@ export class EmailService {
     }
 
     const html = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
-        <h2 style="color: #2b3a4a;">Hola ${data.customerName},</h2>
-        <p>Se te ha otorgado un nuevo microcrédito en el <strong>Mini Market Urbano</strong>.</p>
-        <ul style="background: #f4f7f6; padding: 15px 30px; border-radius: 8px;">
-          <li><strong>Monto:</strong> $${data.amount}</li>
-          <li><strong>Vencimiento:</strong> ${data.dueDate}</li>
-        </ul>
-        <p>Puedes revisar tu estado de cuenta en cualquier momento:</p>
-        <p style="text-align: center;">
-          <a href="${data.statementUrl}" style="background-color: #0d8365; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Ver Estado de Cuenta</a>
-        </p>
-        <hr style="border: none; border-top: 1px solid #ddd; margin-top: 30px;" />
-        <p style="color: #666; font-size: 12px; text-align: center;">Mini Market Urbano - Cobranza Automática</p>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+        <div style="background-color: #002A5C; color: #ffffff; padding: 20px; text-align: center;">
+          <h1 style="color: #FFDD00; margin: 0; font-size: 22px;">Mini Market Urbano</h1>
+          <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.9;">Comprobante de Microcrédito Otorgado</p>
+        </div>
+        <div style="padding: 24px;">
+          <h2 style="color: #1e293b; margin-top: 0;">Hola ${data.customerName},</h2>
+          <p style="color: #475569; line-height: 1.5;">Se ha registrado exitosamente un nuevo crédito a tu cuenta en <strong>Mini Market Urbano</strong>.</p>
+          
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px 20px; border-radius: 8px; margin: 20px 0;">
+            ${data.baseAmount ? `
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #64748b; font-size: 14px;">
+              <span>Monto Base (Precio Contado):</span>
+              <strong style="color: #334155;">$${data.baseAmount}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #64748b; font-size: 14px;">
+              <span>Recargo Financiamiento Crédito (+${data.surchargePercent || '5'}%):</span>
+              <strong style="color: #0d8365;">+$${data.surchargeAmount || '0.00'}</strong>
+            </div>
+            <hr style="border: none; border-top: 1px dashed #cbd5e1; margin: 10px 0;" />
+            ` : ''}
+            <div style="display: flex; justify-content: space-between; color: #0f172a; font-size: 16px;">
+              <span><strong>Total a Pagar a Crédito:</strong></span>
+              <strong style="color: #002A5C; font-size: 18px;">$${data.amount}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 8px; color: #dc2626; font-size: 14px;">
+              <span>Fecha Límite de Pago:</span>
+              <strong>${data.dueDate}</strong>
+            </div>
+          </div>
+
+          <p style="color: #475569; font-size: 14px;">Puedes consultar tu estado de cuenta en vivo y promociones activas desde el siguiente botón:</p>
+          <div style="text-align: center; margin: 24px 0;">
+            <a href="${data.statementUrl}" style="background-color: #0d8365; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Ver Estado de Cuenta en Línea</a>
+          </div>
+        </div>
+        <div style="background-color: #f1f5f9; padding: 12px; text-align: center; font-size: 12px; color: #64748b;">
+          Mini Market Urbano &bull; Sistema de Gestión y Microcréditos
+        </div>
       </div>
     `;
 

@@ -9,6 +9,7 @@ export interface Customer {
   email?: string;
   description?: string;
   maxCredit: number;
+  walletBalance?: string;
   semaphore?: {
     status: SemaphoreStatus;
     reason: string;

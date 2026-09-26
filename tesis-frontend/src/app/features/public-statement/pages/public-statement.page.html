@@ -1,4 +1,7 @@
 @if (statement(); as data) {
+  <!-- Pop-Up Welcome Sponsor Modal for Customers -->
+  <app-ad-banner type="popup"></app-ad-banner>
+
   <section class="max-w-4xl mx-auto my-4 sm:my-8 px-4 sm:px-0 flex flex-col gap-4">
     <!-- Top Leaderboard Ad for Customers -->
     <app-ad-banner type="header"></app-ad-banner>
@@ -23,6 +26,14 @@
             <div class="stat p-4 sm:p-6">
               <div class="stat-title text-xs uppercase tracking-widest">Saldo Pendiente</div>
               <div class="stat-value text-error text-2xl sm:text-3xl lg:text-4xl">${{ data.totals.pending }}</div>
+            </div>
+            <div class="stat p-4 sm:p-6 bg-indigo-950/40 border-l border-indigo-500/30">
+              <div class="stat-title text-xs uppercase tracking-widest text-indigo-300 font-bold flex items-center gap-1">
+                <ng-icon name="heroBanknotes" class="text-indigo-400"></ng-icon>
+                Wallet Prepago
+              </div>
+              <div class="stat-value text-emerald-400 text-2xl sm:text-3xl lg:text-4xl font-mono font-black">${{ data.customer.walletBalance || '0.00' }}</div>
+              <div class="stat-desc text-[11px] text-indigo-200/80 mt-0.5">Saldo prepagado disponible</div>
             </div>
           </div>
 
@@ -114,16 +125,36 @@
                       <span class="text-sm text-base-content/70">Vence: {{ credit.dueDate | date: 'longDate' }}</span>
                     </div>
                     <div class="divider my-2"></div>
-                    <table class="table table-sm">
-                      <tbody>
-                        @for (item of credit.items; track $index) {
-                          <tr>
-                            <td class="text-sm">{{ item.product.name }} (x{{ item.qty }})</td>
-                            <td class="text-sm font-mono text-right">${{ item.subtotal }}</td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
+                    @if (credit.items && credit.items.length > 0) {
+                      <table class="table table-sm">
+                        <tbody>
+                          @for (item of credit.items; track $index) {
+                            <tr>
+                              <td class="text-sm">{{ item.product.name }} (x{{ item.qty }})</td>
+                              <td class="text-sm font-mono text-right">${{ item.subtotal }}</td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    }
+                    <div class="bg-base-200/60 rounded-xl p-3 mt-2 flex flex-col gap-1.5 text-xs">
+                      @if (credit.baseAmount) {
+                        <div class="flex justify-between text-base-content/70">
+                          <span>Monto Base (Precio Contado):</span>
+                          <span class="font-mono font-medium">${{ credit.baseAmount }}</span>
+                        </div>
+                      }
+                      @if (credit.surchargeAmount && credit.surchargeAmount !== '0' && credit.surchargeAmount !== '0.00') {
+                        <div class="flex justify-between text-emerald-400">
+                          <span>Recargo Financiamiento (+{{ credit.surchargePercent || '5' }}%):</span>
+                          <span class="font-mono font-bold">+${{ credit.surchargeAmount }}</span>
+                        </div>
+                      }
+                      <div class="flex justify-between text-sm font-bold pt-1 border-t border-base-300 text-base-content">
+                        <span>Total a Pagar a Crédito:</span>
+                        <span class="font-mono text-primary text-base">${{ credit.amount }}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               }

@@ -1,22 +1,94 @@
-@if (!hidden()) {
-  <!-- CONTENEDOR ADSENSE -->
-  <div class="relative w-full rounded-2xl overflow-hidden shadow-xl group my-4 bg-slate-900 border border-slate-800">
-    
-    <div class="absolute top-2 right-2 z-20 flex items-center gap-1 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded text-[10px] text-slate-300 font-sans border border-slate-700">
-      <span>Anuncio</span>
-      <button (click)="hideAd($event)" type="button" class="hover:text-red-400 font-bold ml-2">
-        ✕
-      </button>
+@if (type === 'popup' && showModal()) {
+  <!-- Pop-Up Modal Publicitario de Negocio Aliado del Barrio -->
+  <div class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn font-manrope">
+    <div class="card bg-slate-900 border-2 border-amber-400/60 shadow-2xl w-full max-w-md overflow-hidden text-white relative">
+      <!-- Top Sponsor Badge -->
+      <div class="bg-gradient-to-r from-amber-600 via-amber-700 to-amber-900 px-4 py-2 flex items-center justify-between text-xs font-bold font-jost text-amber-100">
+        <span class="flex items-center gap-1.5 uppercase tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <ng-icon name="heroMegaphone" class="text-amber-200 text-sm"></ng-icon>
+          Negocio Aliado Auspiciador del Barrio
+        </span>
+        <button (click)="closeModal()" class="btn btn-ghost btn-xs text-amber-100 hover:bg-amber-800"><ng-icon name="heroXMark" class="text-base"></ng-icon></button>
+      </div>
+
+      <!-- Banner Image -->
+      <div class="relative h-44 w-full overflow-hidden bg-slate-950">
+        <img [src]="activeSponsor.imageUrl" [alt]="activeSponsor.businessName" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/30 to-transparent"></div>
+        <span class="absolute top-3 left-3 bg-gradient-to-r from-amber-500 to-red-600 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg border border-amber-200">
+          {{ activeSponsor.offerTag }}
+        </span>
+      </div>
+
+      <!-- Sponsor Body -->
+      <div class="p-5 space-y-3 bg-slate-900">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] uppercase font-bold text-amber-400 tracking-widest font-mono">{{ activeSponsor.category }}</span>
+          <span class="badge badge-outline badge-xs text-emerald-400 border-emerald-400">Patrocinador Oficial</span>
+        </div>
+
+        <h3 class="text-lg font-bold font-jost text-white leading-tight m-0">
+          {{ activeSponsor.businessName }}
+        </h3>
+        <p class="text-xs text-slate-300 leading-relaxed m-0">
+          {{ activeSponsor.description }}
+        </p>
+
+        <!-- Call to Action Buttons -->
+        <div class="pt-3 flex items-center gap-2">
+          <button
+            type="button"
+            (click)="openWhatsApp(activeSponsor.phoneWhatsApp, activeSponsor.businessName)"
+            class="btn btn-sm bg-emerald-600 hover:bg-emerald-500 text-white border-none flex-1 font-bold font-jost gap-2 shadow-lg shadow-emerald-600/30"
+          >
+            <ng-icon name="heroDevicePhoneMobile" class="text-base"></ng-icon>
+            <span>Contactar por WhatsApp</span>
+          </button>
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="btn btn-sm btn-outline border-slate-700 text-slate-300 hover:bg-slate-800 flex items-center gap-1"
+          >
+            Continuar <ng-icon name="heroArrowRight" class="text-xs"></ng-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (type !== 'popup' && !hidden()) {
+  <!-- Banner Embebido de Negocio Aliado del Barrio -->
+  <div class="relative w-full rounded-2xl overflow-hidden shadow-xl my-4 bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 border border-amber-500/30 font-manrope">
+    <div class="absolute top-2 right-2 z-20 flex items-center gap-1 bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px] text-amber-300 font-mono border border-amber-500/30">
+      <span class="flex items-center gap-1"><ng-icon name="heroMegaphone" class="text-xs"></ng-icon> Negocio Aliado ($ Patrocinado)</span>
+      <button (click)="hideAd($event)" type="button" class="hover:text-red-400 font-bold ml-2"><ng-icon name="heroXMark" class="text-xs"></ng-icon></button>
     </div>
 
-    <div class="w-full flex items-center justify-center min-h-[100px] bg-slate-900/50 p-2">
-      <!-- Google AdSense Tag -->
-      <ins class="adsbygoogle"
-           style="display:block"
-           [attr.data-ad-client]="adClient"
-           [attr.data-ad-slot]="type === 'header' ? adSlotHeader : (type === 'native' ? adSlotNative : adSlotFooter)"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
+    <div class="p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-800 border border-amber-400/40 shrink-0">
+          <img [src]="activeSponsor.imageUrl" [alt]="activeSponsor.businessName" class="w-full h-full object-cover" />
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="badge badge-warning text-[10px] font-bold uppercase">{{ activeSponsor.offerTag }}</span>
+            <span class="text-[11px] text-amber-300 font-mono">{{ activeSponsor.category }}</span>
+          </div>
+          <h4 class="text-base font-bold font-jost text-white m-0 mt-0.5">{{ activeSponsor.businessName }}</h4>
+          <p class="text-xs text-slate-300 m-0 line-clamp-1">{{ activeSponsor.description }}</p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="openWhatsApp(activeSponsor.phoneWhatsApp, activeSponsor.businessName)"
+        class="btn btn-xs sm:btn-sm bg-emerald-600 hover:bg-emerald-500 text-white border-none font-bold gap-1 shrink-0"
+      >
+        <ng-icon name="heroDevicePhoneMobile" class="text-sm"></ng-icon>
+        <span>Contactar Anunciante</span>
+      </button>
     </div>
   </div>
 }
