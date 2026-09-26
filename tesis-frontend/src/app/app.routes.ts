@@ -69,6 +69,11 @@ export const routes: Routes = [
 				loadComponent: () =>
 					import('./features/offers/pages/offers.page').then((m) => m.OffersPage),
 			},
+			{
+				path: 'invoicing',
+				loadComponent: () =>
+					import('./features/invoicing/pages/invoicing.page').then((m) => m.InvoicingPage),
+			},
 			{ path: '', pathMatch: 'full', redirectTo: 'dashboard' },
 		],
 	},

@@ -7,6 +7,7 @@ export interface Customer {
   docType: string;
   docNumber: string;
   email?: string;
+  address?: string;
   description?: string;
   maxCredit: number;
   walletBalance?: string;

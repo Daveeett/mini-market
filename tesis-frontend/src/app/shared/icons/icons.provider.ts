@@ -49,7 +49,9 @@ import {
   heroDevicePhoneMobile,
   heroPause,
   heroPlay,
-  heroArrowRight
+  heroArrowRight,
+  heroPrinter,
+  heroQrCode
 } from '@ng-icons/heroicons/outline';
 
 export const appIconProviders = [
@@ -103,6 +105,8 @@ export const appIconProviders = [
     heroDevicePhoneMobile,
     heroPause,
     heroPlay,
-    heroArrowRight
+    heroArrowRight,
+    heroPrinter,
+    heroQrCode
   }),
 ];

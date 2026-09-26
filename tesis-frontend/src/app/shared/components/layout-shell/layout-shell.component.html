@@ -89,6 +89,15 @@
             Publicidad & Anuncios
           </a>
         </li>
+        <li>
+          <a routerLink="/invoicing" routerLinkActive="active" (click)="drawerToggle.checked = false">
+            <ng-icon name="heroDocumentText" class="text-base text-amber-500"></ng-icon>
+            <span class="flex items-center justify-between w-full">
+              <span>Facturación SRI</span>
+              <span class="badge badge-warning badge-xs font-mono text-[9px]">SRI 1-CLIC</span>
+            </span>
+          </a>
+        </li>
 
         @if (isAdmin()) {
           <li>

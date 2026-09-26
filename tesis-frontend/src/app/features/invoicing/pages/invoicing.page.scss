@@ -1,0 +1,14 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-ride-modal, #printable-ride-modal * {
+    visibility: visible;
+  }
+  #printable-ride-modal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
